@@ -56,7 +56,7 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps ) => {
       },
       to: {
         fontSize: currentTimerState ? "6rem" : "1.5rem",
-        margin: currentTimerState ? "1rem 0" : "0.2rem 0",
+        margin: currentTimerState ? "3rem 0" : "0.2rem 0",
       },
       config: {
         tension: 1000,
