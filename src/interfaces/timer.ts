@@ -1,5 +1,5 @@
 
-export interface TimerForm {
+export interface TimerFormString {
     prepareM: string,
     prepareS: string,
     recoveryM: string,
@@ -10,6 +10,20 @@ export interface TimerForm {
     workS: string,
     cycles: string,
     tabatas: string,
+ }
+
+
+ export interface TimerFormNumber {
+    prepareM: number,
+    prepareS: number,
+    recoveryM: number,
+    recoveryS: number,
+    restM: number,
+    restS: number,
+    workM: number,
+    workS: number,
+    initialCycles: number,
+    initialTabatas: number,
  }
  
 
@@ -22,4 +36,11 @@ export interface ITimers {
     work: number;
     recovery: number;
     rest: number;
+}
+
+export interface CurrentStateTimer {
+    prepare: boolean;
+    work: boolean;
+    rest: boolean;
+    recovery: boolean;
 }

@@ -1,16 +1,17 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Home, Start } from "../pages";
+import { Layout } from "../components/layouts/Layout";
+import { HomePage, StartPage } from "../pages";
   
-  export const Navigation = () => {
-    return (
+  export const Navigation = () => (
+    
           <Routes>
             <Route
               path="/"
-              element={<Home />}
+              element={<HomePage />}
             />
             <Route
               path="/start"
-              element={<Start/>}
+              element={<StartPage/>}
             />
 
             <Route
@@ -23,6 +24,5 @@ import { Home, Start } from "../pages";
               }
             />
           </Routes>
-    );
-  };
+);
   

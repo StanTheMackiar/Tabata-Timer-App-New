@@ -1,6 +1,6 @@
 
 
 
-export * from "./Home";
-export * from "./Start";
+export * from "./HomePage";
+export * from "./StartPage";
 

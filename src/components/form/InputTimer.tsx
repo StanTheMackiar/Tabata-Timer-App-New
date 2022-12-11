@@ -1,10 +1,11 @@
 import { ChangeEvent} from "react";
 import styled from "styled-components";
 import { FC } from 'react';
-import { InputTypes, TimerForm, TimerTypes } from "../../interfaces";
+import { InputTypes, TimerFormString, TimerTypes } from "../../interfaces";
+import { inputs, timers } from "../../utils";
 
 interface Props {
-  value: TimerForm,
+  value: TimerFormString,
   title: TimerTypes,
   
   onChange: ( event: ChangeEvent<HTMLInputElement>, inputType: InputTypes ) => void,
@@ -12,37 +13,21 @@ interface Props {
 
 export const InputTimer: FC<Props> = ({ value, title, onChange }) =>  {
 
-  const bgColor = {
-    'prepare': "rgb(32, 174, 199)",
-    'work': "rgb(41, 52, 212)",
-    'rest': "rgb(102, 40, 218)",
-    'recovery': "rgb(144, 41, 212)",
-  }
+  const bgColor = timers.getBGColor(title)
+  const seconds = inputs.getInputValue('seconds', value, title)
+  const minutes = inputs.getInputValue('minutes', value, title)
 
-  const seconds = {
-    'prepare': value.prepareS,
-    'work': value.workS,
-    'rest': value.restS,
-    'recovery': value.recoveryS,
-  }
-
-  const minutes = {
-    'prepare': value.prepareM,
-    'work': value.workM,
-    'rest': value.restM,
-    'recovery': value.recoveryM,
-  }
 
   return (
 
-        <Container bgColor={ bgColor[title] }>
+        <Container bgColor={ bgColor }>
           <Subtitle>{title}</Subtitle>
             <Input
               type="number"
               min="0"
               max="99"
               name={`${title}M`}
-              value={ minutes[title] }
+              value={ minutes }
               onChange={(event) => onChange(event, 'minutes')}
             />
             <Span>:</Span>
@@ -51,7 +36,7 @@ export const InputTimer: FC<Props> = ({ value, title, onChange }) =>  {
               min="1"
               max="59"
               name={`${title}S`}
-              value={ seconds[title] }
+              value={ seconds }
               onChange={(event) => onChange(event, 'seconds')}
             />
         </Container>

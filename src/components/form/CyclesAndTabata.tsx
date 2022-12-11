@@ -1,28 +1,41 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, useContext } from 'react';
 
 import styled from "styled-components";
-import { InputTypes, TimerForm } from '../../interfaces';
+import { InputTypes, TimerFormString } from '../../interfaces';
+import { TimerContext } from '../../context/timer/TimerContex';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
-  value: TimerForm,
+  value?: TimerFormString,
+  disabled?: boolean,
 
-  onChange: ( event: ChangeEvent<HTMLInputElement>, inputType: InputTypes ) => void,
-};
+  onChange?: ( event: ChangeEvent<HTMLInputElement>, inputType: InputTypes ) => void,
+}
 
-export const CyclesAndTabata: FC<Props> = ({ onChange, value }) => {
+  const initialValue = {
+    cycles: 0,
+    tabatas: 0,
+  }
 
+  export const CyclesAndTabata: FC<Props> = ({ onChange, value = initialValue, disabled = false }) => {
+
+    const { state } = useContext(TimerContext)
+    const { cycles, tabatas } = state.timer
+
+    const location = useLocation();
+    const isTimerActive = location.pathname === '/start' || location.pathname === '/start/'
 
 
   return (
-    <InputBox>
+    <Container isTimerActive={isTimerActive}>
       <Label htmlFor="cycles">CYCLES</Label>
       <Input
         id="cycles"
         type="number"
-        value={value.cycles}
+        value={ isTimerActive ? cycles : value.cycles }
         name='cycles'
-        onChange={(event) => onChange(event, 'cycles')}
-        // disabled={timerState.global && "disabled"}
+        onChange={onChange ? (event) => onChange(event, 'cycles') : () => {''}}
+        disabled={disabled}
         min="1"
         max="99"
       />
@@ -30,21 +43,22 @@ export const CyclesAndTabata: FC<Props> = ({ onChange, value }) => {
       <Input
         id="tabatas"
         type="number"
-        value={value.tabatas}
+        value={ isTimerActive ? tabatas : value.tabatas }
         name='tabatas'
-        onChange={(event) => onChange(event, 'tabatas')}
-        // disabled={timerState.global && "disabled"}
+        onChange={onChange ? (event) => onChange(event, 'tabatas') : () => {''}}
+        disabled={disabled}
         min="1"
         max="99"
       />
-    </InputBox>
+    </Container>
   );
 }
 
 
 
-const InputBox = styled.section`
+const Container = styled.section<{ isTimerActive: boolean }>`
   display: flex;
+  flex: ${({isTimerActive}) => isTimerActive ? 2 : 1 };
   flex-direction: row;
   justify-content: space-around;
   align-items: center;

@@ -2,10 +2,10 @@ import { useState, useContext, useRef, useEffect, ChangeEvent, FormEvent } from 
 import { useNavigate } from "react-router-dom";
 
 import { SoundContext } from "../context/sound";
-import { TimerForm, InputTypes } from "../interfaces";
+import { TimerFormString, InputTypes } from "../interfaces";
 import { validation } from "../utils";
 
-const initialForm: TimerForm = {
+const initialForm: TimerFormString = {
     prepareM  : '00',
     prepareS  : '05',
     workM     : '00',
@@ -20,12 +20,11 @@ const initialForm: TimerForm = {
 
 export const useForm = () => {
 
-   const [form, setForm] = useState<TimerForm>(initialForm);
+   const [form, setForm] = useState<TimerFormString>(initialForm);
    const { startBeepSound, prepareSound } = useContext(SoundContext);
+
    let firstRender = useRef(true)
-
    const navigate = useNavigate();
-
 
    useEffect(() => {
       const newForm = JSON.parse(localStorage.getItem('form') as string) || initialForm;
@@ -54,15 +53,10 @@ export const useForm = () => {
    }
 
    const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
-
       event.preventDefault();
-
-      console.log({...form})
-
-      // startBeepSound.play();
-      // prepareSound.play();
+      prepareSound.play();
       
-      // navigate(`/start/?prepareM=${form.prepareM}&prepareS=${form.prepareS}&workM=${form.workM}&workS=${form.workS}&restM=${form.restM}&restS=${form.restS}&recoveryM=${form.recoveryM}&recoveryS=${form.recoveryS}&cycles=${form.cycles}&tabatas=${form.tabatas}`)
+      navigate(`/start/?prepareM=${form.prepareM}&prepareS=${form.prepareS}&workM=${form.workM}&workS=${form.workS}&restM=${form.restM}&restS=${form.restS}&recoveryM=${form.recoveryM}&recoveryS=${form.recoveryS}&cycles=${form.cycles}&tabatas=${form.tabatas}`)
 
    }
 

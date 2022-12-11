@@ -1,56 +1,20 @@
-import React, { CSSProperties, useContext, useEffect, useState } from "react";
+import { CSSProperties } from "react";
 
 import { HiVolumeUp, HiVolumeOff } from "react-icons/hi";
 import { MdRecordVoiceOver, MdVoiceOverOff } from "react-icons/md";
 import styled from "styled-components";
-import { Howler } from "howler";
+import { useVolume } from "../../hooks";
 
-import { SoundContext } from '../../context/sound';
-
-const initialVolume = localStorage.getItem("volume") || '1'
-
-const initialIsMuted: boolean = JSON.parse(localStorage.getItem("isMuted") as string) || false;
 
 
 export const VolumeControl = () => {
-    const {
-        prepareSound,
-        stopSound,
-        threeSound,
-        twoSound,
-        oneSound,
-        workSound,
-        restSound,
-    } = useContext(SoundContext)
 
-  const [volume, setVolume] = useState(Number(initialVolume));
-  const [isMuted, setIsMuted] = useState(initialIsMuted);
+  const { onChange, changeIsMuted, volume, isMuted } = useVolume()
 
-  const onChange = (e) => {
-    setVolume(Number(e.target.value))
-    Howler.volume(volume);
-  }
-
-  useEffect(()=> {
-    Howler.volume(volume)
-  }, [volume])
-
-  useEffect(()=> {
-    localStorage.setItem("volume", volume.toString());
-  }, [volume])
-
-  useEffect(() => {
-    prepareSound.mute(isMuted ? true : false)
-    stopSound.mute(isMuted ? true : false)
-    threeSound.mute(isMuted ? true : false)
-    twoSound.mute(isMuted ? true : false)
-    oneSound.mute(isMuted ? true : false)
-    workSound.mute(isMuted ? true : false)
-    restSound.mute(isMuted ? true : false)
-  }, [isMuted]);
+ 
 
   return (
-    <ContainerFlex>
+    <Container>
       <Box>
         {volume === 0 ? (
           <HiVolumeOff
@@ -77,22 +41,16 @@ export const VolumeControl = () => {
         {!isMuted ? (
           <MdRecordVoiceOver
             style={voiceStyle}
-            onClick={() => {
-              setIsMuted(true);
-              localStorage.setItem("isMuted", JSON.stringify(true));
-            }}
+            onClick={() => changeIsMuted(true)}
           />
         ) : (
           <MdVoiceOverOff
             style={voiceStyle}
-            onClick={() => {
-              setIsMuted(false);
-              localStorage.setItem("isMuted", JSON.stringify(false));
-            }}
+            onClick={() => changeIsMuted(false)}
           />
         )}
       </Box>
-    </ContainerFlex>
+    </Container>
   );
 }
 
@@ -103,8 +61,10 @@ const voiceStyle: CSSProperties = {
   height: "1.5em",
 };
 
-const ContainerFlex = styled.section`
+const Container = styled.section`
   display: flex;
+  height: 50px;
+  flex: 1;
   align-items: center;
   flex-direction: row;
   justify-content: center;

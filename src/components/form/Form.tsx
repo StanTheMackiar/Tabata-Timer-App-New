@@ -28,6 +28,6 @@ export const Form: FC = () => {
 const StyledForm = styled.form`
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 8;
     text-align: center;
 `;

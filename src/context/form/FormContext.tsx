@@ -1,9 +1,9 @@
 import { ChangeEvent, createContext, FormEvent } from 'react';
-import { InputTypes, TimerForm } from '../../interfaces';
+import { InputTypes, TimerFormString } from '../../interfaces';
 
 
 interface ContextProps {
-    form: TimerForm;
+    form: TimerFormString;
 
     onChange: (event: ChangeEvent<HTMLInputElement>, inputType: InputTypes) => void,
     onSubmit: (event: FormEvent<HTMLFormElement>) => void,

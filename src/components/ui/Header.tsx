@@ -3,16 +3,17 @@ import styled from "styled-components";
 
 
 export const Header = () => (
-    <HeaderSection>
-      <Title>PowerFit Timer</Title>
-    </HeaderSection>
+    <Container>
+      <Title>Tabata Timer</Title>
+    </Container>
 );
 
 
-const HeaderSection = styled.section`
+const Container = styled.section`
   background-color: #f0ffff1d;
+  display: flex;
+  flex: 1;
   border-bottom: thin #313131 solid;
-  width: 100;
   justify-content: center;
   align-items: center;
 `

@@ -3,6 +3,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Navigation } from "./routes/Navigation"
 import { createGlobalStyle } from "styled-components";
 import { SoundProvider, FormProvider } from "./context";
+import { Layout } from "./components/layouts/Layout";
+import { TimerProvider } from "./context/timer";
 
 const App = () => {
 
@@ -10,8 +12,10 @@ const App = () => {
     <Router>
       <SoundProvider>
         <FormProvider>
-          <GlobalStyle />
-          <Navigation />
+          <TimerProvider>
+            <GlobalStyle /> 
+            <Navigation />
+          </TimerProvider>
         </FormProvider>
       </SoundProvider>
     </Router>
@@ -22,6 +26,8 @@ const App = () => {
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
   body {
     margin: 0;
