@@ -32,29 +32,29 @@ export const Timer: FC<Props> = ({ currentTimerName, form }) => {
 
   return (
     <>
-      {currentTimerState ? (
         <TimerSection 
           bgColor={bgColor} 
           currentTimerState={currentTimerState}
         >
           <Subtitle currentTimerState={currentTimerState}>{currentTimerName}</Subtitle>
-          <animated.h2 style={workTimerStyle as any}>
-            {`${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`}
-          </animated.h2>
-          <PauseTimer isPaused={isPaused} togglePause={togglePause} />
+          {
+            currentTimerState 
+            ? ( 
+            <>
+              <animated.h2 style={workTimerStyle as any}>
+                {`${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`}
+              </animated.h2>
+              <PauseTimer isPaused={isPaused} togglePause={togglePause} />
+            </>
+            )  : (
+              <animated.h2 style={workTimerStyle as any}>
+              {`${String(initialMinutes).padStart(2, '0')} : ${String(initialSeconds).padStart(2, '0')}`}
+             </animated.h2>
+            )
+          }
+          
         </TimerSection>
-      ) : (
-        <TimerSection 
-          bgColor={bgColor} 
-          currentTimerState={currentTimerState}
-        >
-          <Subtitle currentTimerState={currentTimerState} >{currentTimerName}</Subtitle>
-          <animated.h2 style={workTimerStyle as any}>
-           {`${String(initialMinutes).padStart(2, '0')} : ${String(initialSeconds).padStart(2, '0')}`}
-          </animated.h2>
-        </TimerSection>
-      )
-    }
+
     </>
   );
 }
