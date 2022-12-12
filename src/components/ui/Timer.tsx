@@ -37,21 +37,14 @@ export const Timer: FC<Props> = ({ currentTimerName, form }) => {
           currentTimerState={currentTimerState}
         >
           <Subtitle currentTimerState={currentTimerState}>{currentTimerName}</Subtitle>
-          {
-            currentTimerState 
-            ? ( 
-            <>
+
               <animated.h2 style={workTimerStyle as any}>
-                {`${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`}
+                {`${String(currentTimerState ? minutes : initialMinutes).padStart(2, '0')} : ${String(currentTimerState ? seconds : initialSeconds).padStart(2, '0')}`}
               </animated.h2>
-              <PauseTimer isPaused={isPaused} togglePause={togglePause} />
-            </>
-            )  : (
-              <animated.h2 style={workTimerStyle as any}>
-              {`${String(initialMinutes).padStart(2, '0')} : ${String(initialSeconds).padStart(2, '0')}`}
-             </animated.h2>
-            )
-          }
+              
+              {
+                currentTimerState && <PauseTimer isPaused={isPaused} togglePause={togglePause} />
+              } 
           
         </TimerSection>
 
