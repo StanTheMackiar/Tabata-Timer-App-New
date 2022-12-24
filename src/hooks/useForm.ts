@@ -21,9 +21,9 @@ const initialForm: TimerFormString = {
 export const useForm = () => {
 
    const [form, setForm] = useState<TimerFormString>(initialForm);
-   const { startBeepSound, prepareSound } = useContext(SoundContext);
+   const { prepareSound } = useContext(SoundContext);
 
-   let firstRender = useRef(true)
+   const firstRender = useRef(true)
    const navigate = useNavigate();
 
    useEffect(() => {
