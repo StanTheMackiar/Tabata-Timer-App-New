@@ -22,7 +22,7 @@ const PresetBar = styled.div`
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
     grid-column: 1 / -1;
-    justify-content: center;
+    justify-content: flex-start;
   }
 `;
 
