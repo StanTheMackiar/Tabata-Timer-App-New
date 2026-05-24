@@ -1,6 +1,7 @@
 import { FC } from "react";
 
 import styled from "styled-components";
+import { BREAKPOINTS } from "../../utils/breakpoints";
 
 interface Props {
   cycles: string;
@@ -43,13 +44,13 @@ const StatsRow = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: clamp(0.6rem, 1.8dvh, 1rem);
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     grid-template-columns: 1fr;
   }
 `;
 
 const StatButton = styled.button`
-  min-height: clamp(4rem, 13dvh, 6.5rem);
+  min-height: clamp(2rem, 8dvh, 6.5rem);
   border: 0;
   border-radius: 0.85rem;
   background: var(--pf-panel-alt);
@@ -59,14 +60,14 @@ const StatButton = styled.button`
   padding: 0.5rem;
 
   strong {
-    font-size: 56px;
+    font-size: clamp(48px, 64px, 86px);
     line-height: 0.9;
     font-weight: 800;
   }
 
   span {
     color: var(--pf-muted);
-    font-size: 1rem;
+    font-size: clamp(1rem, 2rem, 3rem);
     font-weight: 800;
   }
 `;

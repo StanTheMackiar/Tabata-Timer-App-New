@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { BREAKPOINTS } from "../../../utils/breakpoints";
 
 const StyledForm = styled.form`
   display: flex;
@@ -7,7 +8,7 @@ const StyledForm = styled.form`
   min-height: 0;
   gap: clamp(0.65rem, 2dvh, 1rem);
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     display: grid;
     grid-template-columns: minmax(28rem, 1fr) minmax(16rem, 0.38fr);
     grid-template-rows: auto 1fr auto;
@@ -19,7 +20,7 @@ const PresetBar = styled.div`
   justify-content: center;
   gap: 0.75rem;
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     grid-column: 1 / -1;
     justify-content: flex-start;
   }
@@ -45,7 +46,7 @@ const TimersGrid = styled.div`
   grid-template-rows: repeat(3, minmax(0, 1fr));
   gap: clamp(0.6rem, 1.8dvh, 0.9rem);
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     grid-row: 2 / 4;
   }
 `;
@@ -62,10 +63,10 @@ const TimerButton = styled.button<{ bgColor: string }>`
   padding: clamp(0.75rem, 2dvh, 1.2rem);
   text-align: left;
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15);
-  font-size: 28px;
+  font-size: 24px;
 
-  @media (min-width: 1050px) {
-    font-size: clamp(1.25rem, 2vw, 1.75rem);
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
+    font-size: clamp(48px, 3rem, 64px);
   }
 
   span {
@@ -84,7 +85,7 @@ const StatsRow = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: clamp(0.6rem, 1.8dvh, 1rem);
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     grid-template-columns: 1fr;
   }
 `;

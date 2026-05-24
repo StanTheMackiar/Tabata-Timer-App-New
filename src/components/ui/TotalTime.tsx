@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useTotalTime } from "../../hooks/useTotalTime";
+import { BREAKPOINTS } from "../../utils/breakpoints";
 
 export const TotalTime = () => {
   const { totalMinutes, totalSeconds } = useTotalTime();
@@ -28,7 +29,7 @@ const Container = styled.section`
   border-radius: 0.7rem;
   padding: clamp(0.6rem, 2dvh, 1rem);
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     min-height: 100%;
     border-radius: 1rem;
   }
@@ -48,7 +49,7 @@ const Time = styled.h2`
   font-weight: 900;
   line-height: 1;
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     font-size: clamp(80px, 13vw, 100px);
   }
 `;

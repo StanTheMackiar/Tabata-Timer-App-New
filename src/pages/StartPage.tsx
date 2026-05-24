@@ -4,6 +4,7 @@ import { CyclesAndTabata, StartStopButton, Timer } from "../components";
 import { Layout } from "../components/layouts/Layout";
 import { useTimerContext } from "../context/timer/useTimerContex";
 import { useInitialValues } from "../hooks";
+import { BREAKPOINTS } from "../utils/breakpoints";
 
 export const StartPage: FC = () => {
   const { form, isLoaded } = useInitialValues();
@@ -33,7 +34,7 @@ const RunContent = styled.section`
   gap: clamp(0.7rem, 2dvh, 1rem);
   padding: clamp(0.75rem, 2.5dvh, 1.25rem);
 
-  @media (min-width: 1050px) {
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
     display: grid;
     grid-template-columns: minmax(32rem, 1fr) minmax(18rem, 0.34fr);
     align-items: stretch;

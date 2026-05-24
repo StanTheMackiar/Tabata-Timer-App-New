@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren } from "react";
 import styled from "styled-components";
+import { BREAKPOINTS } from "../../utils/breakpoints";
 import { Header, VolumeControl } from "../ui";
 
 export const Layout: FC<PropsWithChildren> = ({ children }) => {
@@ -23,8 +24,8 @@ const AppContainer = styled.main`
   background-color: var(--pf-bg);
   overflow: hidden;
 
-  @media (min-width: 1050px) {
-    width: min(100dvw, 1180px);
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
+    width: min(100dvw, 1400px);
     padding: 0 1.25rem;
   }
 `;

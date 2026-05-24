@@ -31,6 +31,20 @@ const createInitialPresets = (): TimerFormString[] => [
   { ...initialForm, workS: "50", restS: "10" },
 ];
 
+const getCircularValue = (
+  currentValue: string,
+  delta: number,
+  inputType: InputTypes,
+) => {
+  const maxValue = inputType === "seconds" || inputType === "minutes" ? 59 : 99;
+  const minValue = inputType === "minutes" ? 0 : 1;
+  const range = maxValue - minValue + 1;
+  const normalizedValue = Number(currentValue) || minValue;
+  const nextValue = ((normalizedValue + delta - minValue + range) % range) + minValue;
+
+  return String(nextValue).padStart(2, "0");
+};
+
 const readPresets = (): TimerFormString[] => {
   const stored = getLocalStorageItem<TimerFormString[] | null>(
     LocalStorageKey.PRESETS,
@@ -97,8 +111,7 @@ export const useForm = (): FormProviderProps => {
     delta: number,
     inputType: InputTypes,
   ) => {
-    const nextValue = Number(form[field]) + delta;
-    updateField(field, validation.validateForm(String(nextValue), inputType));
+    updateField(field, getCircularValue(form[field], delta, inputType));
   };
 
   const setActivePreset = (index: number) => {
