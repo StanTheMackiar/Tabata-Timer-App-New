@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { StartStopButton } from ".";
+import { CyclesAndTabata, StartStopButton } from ".";
 import { useFormContext } from "../../context/form/useFormContext";
 import { TimerType } from "../../enums";
 import { PRESETS_QUANTITY } from "../../hooks";
@@ -12,8 +12,6 @@ import { FormEditorDialog } from "./FormEditorDialog";
 import {
   PresetBar,
   PresetButton,
-  StatButton,
-  StatsRow,
   StyledForm,
   TimerButton,
   TimersGrid,
@@ -67,27 +65,16 @@ export const Form: FC = () => {
         ))}
       </TimersGrid>
 
-      <StatsRow>
-        <StatButton
-          type="button"
-          onClick={() =>
-            setEditor({ kind: "count", title: "cycles", field: "cycles" })
-          }
-        >
-          <strong>{form.cycles}</strong>
-          <span>Cycles</span>
-        </StatButton>
-
-        <StatButton
-          type="button"
-          onClick={() =>
-            setEditor({ kind: "count", title: "tabatas", field: "tabatas" })
-          }
-        >
-          <strong>{form.tabatas}</strong>
-          <span>Tabatas</span>
-        </StatButton>
-      </StatsRow>
+      <CyclesAndTabata
+        cycles={form.cycles}
+        tabatas={form.tabatas}
+        onClickCycles={() =>
+          setEditor({ kind: "count", title: "cycles", field: "cycles" })
+        }
+        onClickTabatas={() =>
+          setEditor({ kind: "count", title: "tabatas", field: "tabatas" })
+        }
+      />
 
       <StartStopButton />
 

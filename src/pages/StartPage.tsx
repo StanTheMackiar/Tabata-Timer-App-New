@@ -2,20 +2,24 @@ import { FC } from "react";
 import styled from "styled-components";
 import { CyclesAndTabata, StartStopButton, Timer } from "../components";
 import { Layout } from "../components/layouts/Layout";
+import { useTimerContext } from "../context/timer/useTimerContex";
 import { useInitialValues } from "../hooks";
 
 export const StartPage: FC = () => {
   const { form, isLoaded } = useInitialValues();
+
+  const { state } = useTimerContext();
 
   return (
     <Layout>
       <RunContent>
         {isLoaded && <Timer form={form} />}
 
-        <RunControls>
-          <CyclesAndTabata disabled />
-          <StartStopButton action="stop" />
-        </RunControls>
+        <CyclesAndTabata
+          cycles={state.timer.cycles.toString()}
+          tabatas={state.timer.tabatas.toString()}
+        />
+        <StartStopButton action="stop" />
       </RunContent>
     </Layout>
   );
@@ -34,10 +38,4 @@ const RunContent = styled.section`
     grid-template-columns: minmax(32rem, 1fr) minmax(18rem, 0.34fr);
     align-items: stretch;
   }
-`;
-
-const RunControls = styled.aside`
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.7rem, 2dvh, 1rem);
 `;

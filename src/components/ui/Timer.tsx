@@ -14,14 +14,14 @@ export const Timer: FC<Props> = ({ form }) => {
   const { bgColor, activeTimer, isPaused, minutes, seconds, togglePause } =
     useTimer({ form });
 
+  const timer = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
   return (
     <>
       <TimerSection bgColor={bgColor}>
         <Subtitle>{activeTimer}</Subtitle>
 
-        <h2>
-          {`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
-        </h2>
+        <h2>{timer}</h2>
 
         <PauseTimer isPaused={isPaused} togglePause={togglePause} />
       </TimerSection>
@@ -52,11 +52,11 @@ const TimerSection = styled.div<{
     text-align: center;
     font-weight: 900;
     display: flex;
-    flex: 1;
+    flex: 3;
     justify-content: center;
     align-items: center;
     font-family: var(--pf-font);
-    font-size: clamp(4.6rem, 22vw, 12rem);
+    font-size: clamp(90px, 28vw, 10rem);
     line-height: 0.95;
   }
 `;

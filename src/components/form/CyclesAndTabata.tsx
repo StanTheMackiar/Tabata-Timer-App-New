@@ -1,113 +1,72 @@
-import { ChangeEvent, FC, useContext } from "react";
+import { FC } from "react";
 
-import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { TimerContext } from "../../context/timer/useTimerContex";
-import { InputTypes, TimerFormString } from "../../interfaces";
-import { AppRoute } from "../../routes/routes.enum";
 
 interface Props {
-  value?: TimerFormString;
-  disabled?: boolean;
-
-  onChange?: (
-    event: ChangeEvent<HTMLInputElement>,
-    inputType: InputTypes,
-  ) => void;
+  cycles: string;
+  tabatas: string;
+  onClickCycles?: VoidFunction;
+  onClickTabatas?: VoidFunction;
 }
 
-const initialValue = {
-  cycles: 0,
-  tabatas: 0,
-};
-
 export const CyclesAndTabata: FC<Props> = ({
-  onChange,
-  value = initialValue,
-  disabled = false,
+  cycles,
+  tabatas,
+  onClickCycles,
+  onClickTabatas,
 }) => {
-  const { state } = useContext(TimerContext);
-  const { cycles, tabatas } = state.timer;
-
-  const location = useLocation();
-  const isTimerActive = location.pathname.startsWith(AppRoute.START);
-
   return (
-    <Container isTimerActive={isTimerActive}>
-      <Label htmlFor="cycles">CYCLES</Label>
-      <Input
-        id="cycles"
-        type="number"
-        value={isTimerActive ? cycles : value.cycles}
-        name="cycles"
-        onChange={
-          onChange
-            ? (event) => onChange(event, "cycles")
-            : () => {
-                "";
-              }
-        }
-        disabled={disabled}
-        min="1"
-        max="99"
-      />
+    <StatsRow>
+      <StatButton
+        type="button"
+        disabled={!onClickCycles}
+        onClick={onClickCycles}
+      >
+        <strong>{cycles}</strong>
+        <span>Cycles</span>
+      </StatButton>
 
-      <Label htmlFor="tabatas">TABATAS</Label>
-      <Input
-        id="tabatas"
-        type="number"
-        value={isTimerActive ? tabatas : value.tabatas}
-        name="tabatas"
-        onChange={
-          onChange
-            ? (event) => onChange(event, "tabatas")
-            : () => {
-                "";
-              }
-        }
-        disabled={disabled}
-        min="1"
-        max="99"
-      />
-    </Container>
+      <StatButton
+        type="button"
+        disabled={!onClickTabatas}
+        onClick={onClickTabatas}
+      >
+        <strong>{tabatas}</strong>
+        <span>Tabatas</span>
+      </StatButton>
+    </StatsRow>
   );
 };
 
-const Container = styled.section<{ isTimerActive: boolean }>`
+const StatsRow = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr auto 1fr;
-  align-items: center;
-  gap: clamp(0.45rem, 1.5vw, 10px);
-  border-radius: 0.85rem;
-  background-color: transparent;
-  padding: 0;
-  transition: all 0.3s ease-in-out;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.6rem, 1.8dvh, 1rem);
 
   @media (min-width: 1050px) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 `;
 
-const Input = styled.input`
-  width: 100%;
-  min-height: clamp(4.4rem, 14dvh, 6rem);
-  text-align: center;
-  font-size: clamp(2.4rem, 11vw, 4.5rem);
-  font-weight: 900;
-  background-color: var(--pf-panel-alt);
-  border: none;
+const StatButton = styled.button`
+  min-height: clamp(4rem, 13dvh, 6.5rem);
+  border: 0;
   border-radius: 0.85rem;
+  background: var(--pf-panel-alt);
   color: var(--pf-white);
-  outline: none;
-`;
+  display: grid;
+  place-items: center;
+  padding: 0.5rem;
 
-const Label = styled.label`
-  text-align: center;
-  display: inline-block;
-  font-weight: 800;
-  color: var(--pf-muted);
+  strong {
+    font-size: 56px;
+    line-height: 0.9;
+    font-weight: 800;
+  }
 
-  @media (min-width: 1050px) {
-    align-self: end;
+  span {
+    color: var(--pf-muted);
+    font-size: 1rem;
+    font-weight: 800;
   }
 `;
