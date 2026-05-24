@@ -17,7 +17,7 @@ export const useInitialValues = () => {
   const [form, setForm] = useState<TimerFormNumber>({} as TimerFormNumber);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const hydrateTimerValuesFromPreset = () => {
+  useEffect(function hydrateTimerValuesFromPreset() {
     const presetIndex = Number(
       params.get("preset") ||
         getLocalStorageItem<number>(LocalStorageKey.ACTIVE_PRESET, 0),
@@ -36,9 +36,7 @@ export const useInitialValues = () => {
 
     setForm(valuesInParams);
     setIsLoaded(true);
-  };
-
-  useEffect(hydrateTimerValuesFromPreset, [params]);
+  }, [params]);
 
   return {
     form,

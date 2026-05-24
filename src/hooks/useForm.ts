@@ -48,25 +48,21 @@ export const useForm = (): FormProviderProps => {
 
   const navigate = useAppNavigate();
 
-  const hydratePresetsFromLocalStorage = () => {
+  useEffect(function hydratePresetsFromLocalStorage() {
     setPresets(readPresets());
     setActivePreset(
       getLocalStorageItem<number>(LocalStorageKey.ACTIVE_PRESET, 0),
     );
     loadSounds();
-  };
+  }, []);
 
-  const persistPresetsInLocalStorage = () => {
+  useEffect(function persistPresetsInLocalStorage() {
     setLocalStorageItem(LocalStorageKey.PRESETS, presets);
-  };
+  }, [presets]);
 
-  const persistActivePresetInLocalStorage = () => {
+  useEffect(function persistActivePresetInLocalStorage() {
     setLocalStorageItem(LocalStorageKey.ACTIVE_PRESET, activePreset);
-  };
-
-  useEffect(hydratePresetsFromLocalStorage, []);
-  useEffect(persistPresetsInLocalStorage, [presets]);
-  useEffect(persistActivePresetInLocalStorage, [activePreset]);
+  }, [activePreset]);
 
   const onChange = (
     { target }: ChangeEvent<HTMLInputElement>,

@@ -62,7 +62,7 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
   );
   const { minutes, seconds, cycles, tabatas } = state.timer;
 
-  const initializePrepareTimer = () => {
+  useEffect(function initializePrepareTimer() {
     if (currentTimerName !== TimerType.PREPARE) return;
 
     changeMinutes(form.prepareM);
@@ -71,9 +71,9 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     changeTabatas(form.initialTabatas);
     runTimer(TimerType.PREPARE);
     setPause(false);
-  };
+  }, []);
 
-  const armCurrentTimerEndTime = () => {
+  useEffect(function armCurrentTimerEndTime() {
     if (!currentTimerState) {
       activatedRef.current = false;
       return;
@@ -88,9 +88,9 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
       beepedRef.current = new Set();
       activatedRef.current = true;
     }
-  };
+  }, [currentTimerState]);
 
-  const syncPauseStateWithTimerClock = () => {
+  useEffect(function syncPauseStateWithTimerClock() {
     if (!currentTimerState || !endAtRef.current) return;
 
     if (state.isPaused && !pausedRef.current) {
@@ -105,11 +105,7 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
       });
       pausedRef.current = false;
     }
-  };
-
-  useEffect(initializePrepareTimer, []);
-  useEffect(armCurrentTimerEndTime, [currentTimerState]);
-  useEffect(syncPauseStateWithTimerClock, [currentTimerState, state.isPaused]);
+  }, [currentTimerState, state.isPaused]);
 
   const getRemainingSeconds = () => {
     if (!endAtRef.current) return secondsFromTimer(minutes, seconds);

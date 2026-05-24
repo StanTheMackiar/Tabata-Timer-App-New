@@ -62,12 +62,10 @@ export const SoundProvider: FC<PropsWithChildren> = ({ children }) => {
     setIsReady(true);
   }, [allSounds]);
 
-  const preloadSoundsOnAppLoad = () => {
+  useEffect(function preloadSoundsOnAppLoad() {
     loadSounds();
     return () => allSounds.forEach((sound) => sound.unload());
-  };
-
-  useEffect(preloadSoundsOnAppLoad, [allSounds, loadSounds]);
+  }, [allSounds, loadSounds]);
 
   const data = {
     ...sounds,

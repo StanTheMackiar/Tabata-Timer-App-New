@@ -21,31 +21,25 @@ export const useVolume = () => {
     setLocalStorageItem(LocalStorageKey.IS_MUTED, state);
   };
 
-  const hydrateVolumeFromLocalStorage = () => {
+  useEffect(function hydrateVolumeFromLocalStorage() {
     setVolume(getLocalStorageItem<number>(LocalStorageKey.VOLUME, 0.5));
-  };
+  }, []);
 
-  const hydrateMutedStateFromLocalStorage = () => {
+  useEffect(function hydrateMutedStateFromLocalStorage() {
     setIsMuted(getLocalStorageItem<boolean>(LocalStorageKey.IS_MUTED, false));
-  };
+  }, []);
 
-  const syncHowlerVolume = () => {
+  useEffect(function syncHowlerVolume() {
     Howler.volume(volume);
-  };
+  }, [volume]);
 
-  const persistVolumeInLocalStorage = () => {
+  useEffect(function persistVolumeInLocalStorage() {
     setLocalStorageItem(LocalStorageKey.VOLUME, volume);
-  };
+  }, [volume]);
 
-  const syncMutedStateToSounds = () => {
+  useEffect(function syncMutedStateToSounds() {
     allSounds.forEach((sound) => sound.mute(isMuted));
-  };
-
-  useEffect(hydrateVolumeFromLocalStorage, []);
-  useEffect(hydrateMutedStateFromLocalStorage, []);
-  useEffect(syncHowlerVolume, [volume]);
-  useEffect(persistVolumeInLocalStorage, [volume]);
-  useEffect(syncMutedStateToSounds, [allSounds, isMuted]);
+  }, [allSounds, isMuted]);
 
   return {
     isMuted,

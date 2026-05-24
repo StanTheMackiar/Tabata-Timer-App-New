@@ -5,12 +5,12 @@ export const useInterval = (callback: () => void, delay: number | null) => {
     const savedCallback = useRef<() => void>(() => {});
 
     // Remember the latest callback.
-    useEffect(() => {
+    useEffect(function rememberLatestCallback() {
         savedCallback.current = callback;
     }, [callback]);
 
     // Set up the interval.
-    useEffect(() => {
+    useEffect(function setupInterval() {
         const tick = () => {
         savedCallback.current!();
     }
