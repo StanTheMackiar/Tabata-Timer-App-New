@@ -1,4 +1,3 @@
-import { useSpring } from "@react-spring/web";
 import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
 import { Props as useTimerProps } from "../components";
@@ -73,39 +72,45 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     setPause(false);
   }, []);
 
-  useEffect(function armCurrentTimerEndTime() {
-    if (!currentTimerState) {
-      activatedRef.current = false;
-      return;
-    }
+  useEffect(
+    function armCurrentTimerEndTime() {
+      if (!currentTimerState) {
+        activatedRef.current = false;
+        return;
+      }
 
-    if (!activatedRef.current) {
-      endAtRef.current = DateTime.now().plus({
-        seconds: secondsFromTimer(minutes, seconds),
-      });
-      completedRef.current = false;
-      pausedRef.current = false;
-      beepedRef.current = new Set();
-      activatedRef.current = true;
-    }
-  }, [currentTimerState]);
+      if (!activatedRef.current) {
+        endAtRef.current = DateTime.now().plus({
+          seconds: secondsFromTimer(minutes, seconds),
+        });
+        completedRef.current = false;
+        pausedRef.current = false;
+        beepedRef.current = new Set();
+        activatedRef.current = true;
+      }
+    },
+    [currentTimerState],
+  );
 
-  useEffect(function syncPauseStateWithTimerClock() {
-    if (!currentTimerState || !endAtRef.current) return;
+  useEffect(
+    function syncPauseStateWithTimerClock() {
+      if (!currentTimerState || !endAtRef.current) return;
 
-    if (state.isPaused && !pausedRef.current) {
-      pauseRemainingRef.current = getRemainingSeconds();
-      pausedRef.current = true;
-      return;
-    }
+      if (state.isPaused && !pausedRef.current) {
+        pauseRemainingRef.current = getRemainingSeconds();
+        pausedRef.current = true;
+        return;
+      }
 
-    if (!state.isPaused && pausedRef.current) {
-      endAtRef.current = DateTime.now().plus({
-        seconds: pauseRemainingRef.current,
-      });
-      pausedRef.current = false;
-    }
-  }, [currentTimerState, state.isPaused]);
+      if (!state.isPaused && pausedRef.current) {
+        endAtRef.current = DateTime.now().plus({
+          seconds: pauseRemainingRef.current,
+        });
+        pausedRef.current = false;
+      }
+    },
+    [currentTimerState, state.isPaused],
+  );
 
   const getRemainingSeconds = () => {
     if (!endAtRef.current) return secondsFromTimer(minutes, seconds);
@@ -192,23 +197,6 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     currentTimerState && !state.isPaused ? 250 : null,
   );
 
-  const workTimerStyle = useSpring({
-    color: "#111111",
-    textAlign: "center",
-    fontWeight: "900",
-    display: "flex",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: currentTimerState ? "clamp(5rem, 22vw, 9rem)" : "2.25rem",
-    margin: currentTimerState ? "1rem 0" : "0",
-    config: {
-      tension: 1000,
-      mass: 3,
-      friction: 50,
-    },
-  });
-
   return {
     bgColor,
     currentTimerState,
@@ -216,7 +204,6 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     togglePause: toggleTimerPause,
     seconds,
     isPaused: state.isPaused,
-    workTimerStyle,
     initialMinutes,
     initialSeconds,
   };

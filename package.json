@@ -12,7 +12,6 @@
     "lint:fix": "eslint src/ --fix"
   },
   "dependencies": {
-    "@react-spring/web": "^10.1.0",
     "howler": "^2.2.4",
     "luxon": "^3.7.2",
     "react": "^19.2.6",

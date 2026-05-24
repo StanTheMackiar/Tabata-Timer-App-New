@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC } from "react";
 
-import { animated } from "@react-spring/web";
 import styled from "styled-components";
 import { useTimer } from "../../hooks";
 
@@ -24,7 +22,6 @@ export const Timer: FC<Props> = ({ currentTimerName, form }) => {
     minutes,
     seconds,
     togglePause,
-    workTimerStyle,
   } = useTimer({ currentTimerName, form });
 
   return (
@@ -35,15 +32,15 @@ export const Timer: FC<Props> = ({ currentTimerName, form }) => {
         </Subtitle>
         {currentTimerState ? (
           <>
-            <animated.h2 style={workTimerStyle as any}>
+            <h2>
               {`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
-            </animated.h2>
+            </h2>
             <PauseTimer isPaused={isPaused} togglePause={togglePause} />
           </>
         ) : (
-          <animated.h2 style={workTimerStyle as any}>
+          <h2>
             {`${String(initialMinutes).padStart(2, "0")}:${String(initialSeconds).padStart(2, "0")}`}
-          </animated.h2>
+          </h2>
         )}
       </TimerSection>
     </>
@@ -67,6 +64,18 @@ const TimerSection = styled.div<{
   color: #111;
   overflow: hidden;
   display: ${({ currentTimerState }) => (currentTimerState ? "flex" : "none")};
+
+  h2 {
+    color: #111;
+    text-align: center;
+    font-weight: 900;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    font-size: ${({ currentTimerState }) =>
+      currentTimerState ? "clamp(5rem, 22vw, 9rem)" : "2.25rem"};
+  }
 `;
 
 const Subtitle = styled.h4<{ currentTimerState: boolean }>`
