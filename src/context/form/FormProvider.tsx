@@ -1,22 +1,9 @@
-import { FC, PropsWithChildren } from 'react'
-import { useForm } from '../../hooks';
-import { FormContext } from './';
-
+import { FC, PropsWithChildren } from "react";
+import { useForm } from "../../hooks";
+import { FormContext } from "./useFormContext";
 
 export const FormProvider: FC<PropsWithChildren> = ({ children }) => {
+  const value = useForm();
 
-    
-  const { form, onChange, onSubmit } = useForm();
-
-   return (
-       <FormContext.Provider value={{
-         form,
-
-         onChange,
-         onSubmit
-
-       }}>
-          { children }
-       </FormContext.Provider>
-   )
+  return <FormContext value={value}>{children}</FormContext>;
 };

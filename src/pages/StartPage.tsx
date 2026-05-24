@@ -17,7 +17,6 @@ export const StartPage:FC = () => {
                <Timer form={form} currentTimerName='prepare' />
                <Timer form={form} currentTimerName='work' />
                <Timer form={form} currentTimerName='rest' />
-               <Timer form={form} currentTimerName='recovery' />
             </TimerContainer>
             )
          }
@@ -30,7 +29,8 @@ export const StartPage:FC = () => {
 
 
 const TimerContainer = styled.div`
-  flex: 6;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
 `;

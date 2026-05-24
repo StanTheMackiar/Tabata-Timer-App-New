@@ -17,13 +17,13 @@ export const Layout:FC<PropsWithChildren> = ({ children }) => {
 
 
 const AppContainer = styled.main`
-    border-width: 2px;
-    max-width: 40rem;
+    width: min(100%, 34rem);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     user-select: none;
-    background-color: #ffffff16;
-    border: thin #1d1c1c solid;
+    background-color: var(--pf-bg);
+    border-left: 1px solid var(--pf-line);
+    border-right: 1px solid var(--pf-line);
 `;

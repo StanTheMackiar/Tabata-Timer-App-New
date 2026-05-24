@@ -63,14 +63,12 @@ const voiceStyle: CSSProperties = {
 
 const Container = styled.section`
   display: flex;
-  height: 50px;
-  flex: 1;
+  min-height: 4rem;
   align-items: center;
   flex-direction: row;
   justify-content: center;
-  background-color: #3b3b3b;
-  border-top: thin #313131 solid;
-  border-bottom: thin #313131 solid;
+  background-color: #101010;
+  border-top: 1px solid var(--pf-line);
 `;
 
 const Box = styled.div`
@@ -78,7 +76,8 @@ const Box = styled.div`
   flex-direction: row;
 `;
 const InputRange = styled.input`
-  width: 10rem;
+  width: min(38vw, 10rem);
+  accent-color: var(--pf-green);
   &:hover {
     cursor: pointer;
   }

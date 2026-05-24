@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Layout } from "../components/layouts/Layout";
 import { HomePage, StartPage } from "../pages";
   
   export const Navigation = () => (

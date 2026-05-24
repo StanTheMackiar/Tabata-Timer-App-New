@@ -1,72 +1,49 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { TimerFormNumber, TimerTypes } from "../interfaces";
+import { TimerFormNumber, TimerFormString } from "../interfaces";
+import { initialForm } from "./useForm";
 
 export interface InitialValuesReturn {
-   minutes: number;
-   seconds: number;
-   cycles: number;
-   tabatas: number;
+  minutes: number;
+  seconds: number;
+  cycles: number;
+  tabatas: number;
 }
 
 export const useInitialValues = () => {
-    
-   const [ params ] = useSearchParams()
-   const [ form, setForm ] = useState<TimerFormNumber>({} as TimerFormNumber);
-   const [isLoaded, setIsLoaded] = useState(false);
-   
+  const [params] = useSearchParams();
+  const [form, setForm] = useState<TimerFormNumber>({} as TimerFormNumber);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-   useEffect(() => {
-      const valuesInParams: TimerFormNumber = {
-         prepareM : Number(params.get('prepareM'))  || 0,
-         prepareS : Number(params.get('prepareS'))  || 5,
-         workM    : Number(params.get('workM'))     || 0,
-         workS    : Number(params.get('workS'))     || 20,
-         restM    : Number(params.get('restM'))     || 0,
-         restS    : Number(params.get('restS'))     || 10,
-         recoveryM: Number(params.get('recoveryM')) || 0,
-         recoveryS: Number(params.get('recoveryS')) || 15,
-         initialCycles   : Number(params.get('cycles'))    || 2,
-         initialTabatas  : Number(params.get('tabatas'))   || 4,
-      }
+  useEffect(() => {
+    const presetIndex = Number(
+      params.get("preset") || localStorage.getItem("tabata-active-preset") || 0,
+    );
+    const selectedPreset = getPresetFromStorage(presetIndex);
+    const valuesInParams: TimerFormNumber = {
+      prepareM: Number(selectedPreset.prepareM) || 0,
+      prepareS: Number(selectedPreset.prepareS) || 5,
+      workM: Number(selectedPreset.workM) || 0,
+      workS: Number(selectedPreset.workS) || 20,
+      restM: Number(selectedPreset.restM) || 0,
+      restS: Number(selectedPreset.restS) || 10,
+      initialCycles: Number(selectedPreset.cycles) || 4,
+      initialTabatas: Number(selectedPreset.tabatas) || 3,
+    };
 
-      setForm(valuesInParams)
-      setIsLoaded(true)
-   }, []);
+    setForm(valuesInParams);
+    setIsLoaded(true);
+  }, [params]);
 
-   // const initialValues = ( timerName: TimerTypes = 'prepare' ) : InitialValuesReturn => {
+  return {
+    form,
+    isLoaded,
+  };
+};
 
-   //    const selectInitialValues = {
-   //       'work': {
-   //          minutes: form.workM,
-   //          seconds: form.workS,
-   //       },
-   //       'rest': {
-   //          minutes: form.restM,
-   //          seconds: form.restS,
-   //       },
-   //       'prepare': {
-   //          minutes: form.prepareM,
-   //          seconds: form.prepareS,
-   //       },
-   //       'recovery': {
-   //          minutes: form.recoveryM,
-   //          seconds: form.recoveryS,
-   //       }
-   //    }
-
-   //    return {
-   //       cycles: form.initialCycles,
-   //       tabatas: form.initialTabatas,
-   //       ...selectInitialValues[timerName]
-   //    }
-
-   // }
-
-   return {
-        form,
-        isLoaded
-
-   }
-
-}
+const getPresetFromStorage = (index: number): TimerFormString => {
+  const presets = JSON.parse(
+    localStorage.getItem("tabata-presets") || "[]",
+  ) as TimerFormString[];
+  return { ...initialForm, ...(presets[index] || initialForm) };
+};

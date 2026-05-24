@@ -1,27 +1,26 @@
 import { BrowserRouter as Router } from "react-router-dom";
 
-import { Navigation } from "./routes/Navigation"
 import { createGlobalStyle } from "styled-components";
-import { SoundProvider, FormProvider } from "./context";
-import { Layout } from "./components/layouts/Layout";
-import { TimerProvider } from "./context/timer";
+import { FormProvider } from "./context/form/FormProvider";
+import { SoundProvider } from "./context/sound/SoundProvider";
+import { TimerProvider } from "./context/timer/TimerProvider";
+import { Navigation } from "./routes/Navigation";
+import { COLORS } from "./utils/colors";
 
 const App = () => {
-
   return (
     <Router>
       <SoundProvider>
         <FormProvider>
           <TimerProvider>
-            <GlobalStyle /> 
+            <GlobalStyle />
             <Navigation />
           </TimerProvider>
         </FormProvider>
       </SoundProvider>
     </Router>
-  )
-}
-
+  );
+};
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -29,17 +28,36 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+  :root {
+    --pf-bg: ${COLORS.bg};
+    --pf-panel: ${COLORS.panel};
+    --pf-line: ${COLORS.line};
+    --pf-white: ${COLORS.white};
+    --pf-muted: ${COLORS.muted};
+    --pf-green: ${COLORS.accent};
+    --pf-prepare: ${COLORS.prepare};
+    --pf-work: ${COLORS.work};
+    --pf-rest: ${COLORS.rest};
+  }
   body {
     margin: 0;
-    background-color: rgb(8, 8, 8);
-    color: white;
-    font-family: 'Poppins', sans-serif;
+    background-color: var(--pf-bg);
+    color: var(--pf-white);
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    min-width: 320px;
+  }
+  button,
+  input {
+    font: inherit;
+  }
+  button {
+    cursor: pointer;
   }
   p {
-    color: rgb(156, 192, 247);
+    color: var(--pf-muted);
     font-size: 1rem;
     text-align: center;
   }
 `;
 
-export default App
+export default App;

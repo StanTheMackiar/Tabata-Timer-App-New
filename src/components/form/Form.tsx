@@ -1,33 +1,89 @@
+import { FC, useState } from "react";
+import { StartStopButton } from ".";
+import { useFormContext } from "../../context/form/useFormContext";
+import {
+  FormEditor,
+  FormTimerEditor,
+} from "../../interfaces/forms/form.interface";
+import { timers } from "../../utils";
+import { FormEditorDialog } from "./FormEditorDialog";
+import {
+  PresetBar,
+  PresetButton,
+  StatButton,
+  StatsRow,
+  StyledForm,
+  TimerButton,
+  TimersGrid,
+} from "./styles/FormStyles";
 
-import { FC, useContext } from 'react';
-
-import styled from 'styled-components';
-import { CyclesAndTabata, InputTimer, StartStopButton } from '.'
-
-import { FormContext } from '../../context/form';
-
-
+const timerEditors: FormTimerEditor[] = [
+  { kind: "timer", title: "prepare", minutes: "prepareM", seconds: "prepareS" },
+  { kind: "timer", title: "work", minutes: "workM", seconds: "workS" },
+  { kind: "timer", title: "rest", minutes: "restM", seconds: "restS" },
+];
 
 export const Form: FC = () => {
+  const { activePreset, form, onSubmit, setActivePreset, stepField } =
+    useFormContext();
 
-  const { form, onSubmit, onChange } = useContext(FormContext)
+  const [editor, setEditor] = useState<FormEditor | null>(null);
 
-   return (
-      <StyledForm onSubmit={ onSubmit }>
-        <InputTimer onChange={onChange} title='prepare' value={form} />
-        <InputTimer onChange={onChange} title='work' value={form} />
-        <InputTimer onChange={onChange} title='rest' value={form} />
-        <InputTimer onChange={onChange} title='recovery' value={form} />
-        <CyclesAndTabata onChange={onChange} value={form} />
-        <StartStopButton />
-      </StyledForm>
-   )
-}
+  return (
+    <StyledForm onSubmit={onSubmit}>
+      <PresetBar>
+        {[0, 1, 2].map((index) => (
+          <PresetButton
+            key={index}
+            active={activePreset === index}
+            type="button"
+            onClick={() => setActivePreset(index)}
+          >
+            T{index + 1}
+          </PresetButton>
+        ))}
+      </PresetBar>
 
+      <TimersGrid>
+        {timerEditors.map((item) => (
+          <TimerButton
+            key={item.title}
+            type="button"
+            bgColor={timers.getBGColor(item.title)}
+            onClick={() => setEditor(item)}
+          >
+            <span>{item.title}</span>
+            <strong>
+              {form[item.minutes]}:{form[item.seconds]}
+            </strong>
+          </TimerButton>
+        ))}
+      </TimersGrid>
 
-const StyledForm = styled.form`
-    display: flex;
-    flex-direction: column;
-    flex: 8;
-    text-align: center;
-`;
+      <StatsRow>
+        <StatButton
+          type="button"
+          onClick={() =>
+            setEditor({ kind: "count", title: "cycles", field: "cycles" })
+          }
+        >
+          <strong>{form.cycles}</strong>
+          <span>Cycles</span>
+        </StatButton>
+        <StatButton
+          type="button"
+          onClick={() =>
+            setEditor({ kind: "count", title: "tabatas", field: "tabatas" })
+          }
+        >
+          <strong>{form.tabatas}</strong>
+          <span>Tabatas</span>
+        </StatButton>
+      </StatsRow>
+
+      <StartStopButton />
+
+      {editor && <FormEditorDialog editor={editor} setEditor={setEditor} />}
+    </StyledForm>
+  );
+};

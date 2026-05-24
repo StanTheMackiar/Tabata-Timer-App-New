@@ -1,69 +1,112 @@
-import { useState, useContext, useRef, useEffect, ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { SoundContext } from "../context/sound";
-import { TimerFormString, InputTypes } from "../interfaces";
+import { useSoundContext } from "../context/sound/useSoundContext";
+import { InputTypes, TimerFormString } from "../interfaces";
+import { FormProviderProps } from "../interfaces/providers/form-provider.interface";
 import { validation } from "../utils";
 
-const initialForm: TimerFormString = {
-    prepareM  : '00',
-    prepareS  : '05',
-    workM     : '00',
-    workS     : '20',
-    restM     : '00',
-    restS     : '10',
-    recoveryM : '00',
-    recoveryS : '15',
-    cycles    : '02',
-    tabatas   : '04',
- }
+export const initialForm: TimerFormString = {
+  prepareM: "00",
+  prepareS: "05",
+  workM: "00",
+  workS: "20",
+  restM: "00",
+  restS: "10",
+  cycles: "04",
+  tabatas: "03",
+};
 
-export const useForm = () => {
+const PRESETS_KEY = "tabata-presets";
+const ACTIVE_PRESET_KEY = "tabata-active-preset";
 
-   const [form, setForm] = useState<TimerFormString>(initialForm);
-   const { startBeepSound, prepareSound } = useContext(SoundContext);
+const createInitialPresets = (): TimerFormString[] => [
+  initialForm,
+  { ...initialForm, workS: "30" },
+  { ...initialForm, workS: "40" },
+];
 
-   let firstRender = useRef(true)
-   const navigate = useNavigate();
+const readPresets = (): TimerFormString[] => {
+  const stored = JSON.parse(localStorage.getItem(PRESETS_KEY) || "null") as
+    | TimerFormString[]
+    | null;
 
-   useEffect(() => {
-      const newForm = JSON.parse(localStorage.getItem('form') as string) || initialForm;
-      setForm(newForm)
-   }, []);
+  const presets = Array.isArray(stored) ? stored : createInitialPresets();
 
-   useEffect(() => {
-      if ( firstRender.current ) {
-         firstRender.current = false;
-         return;
-      }
+  return createInitialPresets().map((fallback, index) => ({
+    ...fallback,
+    ...presets[index],
+  }));
+};
 
-      localStorage.setItem('form', JSON.stringify( form ))
-   }, [form]);
+export const useForm = (): FormProviderProps => {
+  const [presets, setPresets] =
+    useState<TimerFormString[]>(createInitialPresets);
+  const [activePreset, setActivePresetState] = useState(0);
+  const form = presets[activePreset] || initialForm;
+  const { prepareSound, loadSounds } = useSoundContext();
 
+  const navigate = useNavigate();
 
- 
-   const onChange = ( { target }: ChangeEvent<HTMLInputElement>, inputType: InputTypes ) => {
+  useEffect(() => {
+    setPresets(readPresets());
+    setActivePreset(Number(localStorage.getItem(ACTIVE_PRESET_KEY) || 0));
+    loadSounds();
+  }, []);
 
-      const validatedValue = validation.validateForm( target.value, inputType )
+  useEffect(() => {
+    localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
+  }, [presets]);
 
-      setForm( prev => ({
-         ...prev,
-         [ target.name ]: validatedValue
-      }))
-   }
+  useEffect(() => {
+    localStorage.setItem(ACTIVE_PRESET_KEY, String(activePreset));
+  }, [activePreset]);
 
-   const onSubmit = ( event: FormEvent<HTMLFormElement> ) => {
-      event.preventDefault();
-      prepareSound.play();
-      
-      navigate(`/start/?prepareM=${form.prepareM}&prepareS=${form.prepareS}&workM=${form.workM}&workS=${form.workS}&restM=${form.restM}&restS=${form.restS}&recoveryM=${form.recoveryM}&recoveryS=${form.recoveryS}&cycles=${form.cycles}&tabatas=${form.tabatas}`)
+  const onChange = (
+    { target }: ChangeEvent<HTMLInputElement>,
+    inputType: InputTypes,
+  ) => {
+    const validatedValue = validation.validateForm(target.value, inputType);
+    updateField(target.name as keyof TimerFormString, validatedValue);
+  };
 
-   }
+  const updateField = (field: keyof TimerFormString, value: string) => {
+    setPresets((prev) =>
+      prev.map((preset, index) =>
+        index === activePreset ? { ...preset, [field]: value } : preset,
+      ),
+    );
+  };
 
-    return {
-        form,
-        
-        onChange,
-        onSubmit,
-    }
-}
+  const stepField = (
+    field: keyof TimerFormString,
+    delta: number,
+    inputType: InputTypes,
+  ) => {
+    const nextValue = Number(form[field]) + delta;
+    updateField(field, validation.validateForm(String(nextValue), inputType));
+  };
+
+  const setActivePreset = (index: number) => {
+    setActivePresetState(Math.min(2, Math.max(0, index)));
+  };
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await loadSounds();
+    prepareSound.play();
+
+    navigate(`/start?preset=${activePreset}`);
+  };
+
+  return {
+    form,
+    activePreset,
+    presets,
+
+    onChange,
+    onSubmit,
+    setActivePreset,
+    stepField,
+    updateField,
+  };
+};

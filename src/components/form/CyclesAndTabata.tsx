@@ -1,30 +1,36 @@
-import { ChangeEvent, FC, useContext } from 'react';
+import { ChangeEvent, FC, useContext } from "react";
 
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { InputTypes, TimerFormString } from '../../interfaces';
-import { TimerContext } from '../../context/timer/TimerContex';
-import { useLocation } from 'react-router-dom';
+import { TimerContext } from "../../context/timer/useTimerContex";
+import { InputTypes, TimerFormString } from "../../interfaces";
 
 interface Props {
-  value?: TimerFormString,
-  disabled?: boolean,
+  value?: TimerFormString;
+  disabled?: boolean;
 
-  onChange?: ( event: ChangeEvent<HTMLInputElement>, inputType: InputTypes ) => void,
+  onChange?: (
+    event: ChangeEvent<HTMLInputElement>,
+    inputType: InputTypes,
+  ) => void;
 }
 
-  const initialValue = {
-    cycles: 0,
-    tabatas: 0,
-  }
+const initialValue = {
+  cycles: 0,
+  tabatas: 0,
+};
 
-  export const CyclesAndTabata: FC<Props> = ({ onChange, value = initialValue, disabled = false }) => {
+export const CyclesAndTabata: FC<Props> = ({
+  onChange,
+  value = initialValue,
+  disabled = false,
+}) => {
+  const { state } = useContext(TimerContext);
+  const { cycles, tabatas } = state.timer;
 
-    const { state } = useContext(TimerContext)
-    const { cycles, tabatas } = state.timer
-
-    const location = useLocation();
-    const isTimerActive = location.pathname === '/start' || location.pathname === '/start/'
-
+  const location = useLocation();
+  const isTimerActive =
+    location.pathname === "/start" || location.pathname === "/start/";
 
   return (
     <Container isTimerActive={isTimerActive}>
@@ -32,9 +38,15 @@ interface Props {
       <Input
         id="cycles"
         type="number"
-        value={ isTimerActive ? cycles : value.cycles }
-        name='cycles'
-        onChange={onChange ? (event) => onChange(event, 'cycles') : () => {''}}
+        value={isTimerActive ? cycles : value.cycles}
+        name="cycles"
+        onChange={
+          onChange
+            ? (event) => onChange(event, "cycles")
+            : () => {
+                "";
+              }
+        }
         disabled={disabled}
         min="1"
         max="99"
@@ -43,48 +55,53 @@ interface Props {
       <Input
         id="tabatas"
         type="number"
-        value={ isTimerActive ? tabatas : value.tabatas }
-        name='tabatas'
-        onChange={onChange ? (event) => onChange(event, 'tabatas') : () => {''}}
+        value={isTimerActive ? tabatas : value.tabatas}
+        name="tabatas"
+        onChange={
+          onChange
+            ? (event) => onChange(event, "tabatas")
+            : () => {
+                "";
+              }
+        }
         disabled={disabled}
         min="1"
         max="99"
       />
     </Container>
   );
-}
-
-
+};
 
 const Container = styled.section<{ isTimerActive: boolean }>`
   display: flex;
-  flex: ${({isTimerActive}) => isTimerActive ? 2 : 1 };
+  flex: ${({ isTimerActive }) => (isTimerActive ? 2 : 1)};
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
   background-color: rgb(92, 42, 139);
-  padding: 0.5rem;
+  gap: 1rem;
+  margin: 0 1rem 1rem;
+  border-radius: 0.35rem;
+  background-color: transparent;
+  padding: 0;
   transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-  border-top: thin #313131 solid;
-  border-bottom: thin #313131 solid;
 `;
 
 const Input = styled.input`
-  max-width: 4rem;
+  width: min(28vw, 8rem);
+  min-height: 6rem;
   text-align: center;
-  font-size: 25px;
-  font-weight: bold;
-  background-color: #ffffff22;
+  font-size: clamp(2.75rem, 14vw, 5rem);
+  font-weight: 900;
+  background-color: var(--pf-white);
   border: none;
-  font-family: "Poppins", sans-serif;
-  border-radius: 0.2rem;
-  color: white;
+  border-radius: 0.35rem;
+  color: #111;
   outline: none;
 `;
 const Label = styled.label`
   text-align: center;
-  margin-left: 0.5rem;
   display: inline-block;
-  font-weight: bold;
+  font-weight: 800;
+  color: var(--pf-white);
 `;
