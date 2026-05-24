@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "homepage": "./",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
