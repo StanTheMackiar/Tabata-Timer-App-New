@@ -5,10 +5,10 @@ import { LocalStorageKey } from "../enums";
 import { getLocalStorageItem, setLocalStorageItem } from "../utils/local-storage";
 
 export const useVolume = () => {
-  const { allSounds } = useSoundContext();
+  const { coachSounds } = useSoundContext();
 
   const [volume, setVolume] = useState(0.5);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isCoachMuted, setIsCoachMuted] = useState(false);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const nextVolume = Number(e.target.value);
@@ -16,17 +16,19 @@ export const useVolume = () => {
     Howler.volume(nextVolume);
   };
 
-  const changeIsMuted = (state: boolean) => {
-    setIsMuted(state);
-    setLocalStorageItem(LocalStorageKey.IS_MUTED, state);
+  const changeIsCoachMuted = (state: boolean) => {
+    setIsCoachMuted(state);
+    setLocalStorageItem(LocalStorageKey.COACH_MUTED, state);
   };
 
   useEffect(function hydrateVolumeFromLocalStorage() {
     setVolume(getLocalStorageItem<number>(LocalStorageKey.VOLUME, 0.5));
   }, []);
 
-  useEffect(function hydrateMutedStateFromLocalStorage() {
-    setIsMuted(getLocalStorageItem<boolean>(LocalStorageKey.IS_MUTED, false));
+  useEffect(function hydrateCoachMutedStateFromLocalStorage() {
+    setIsCoachMuted(
+      getLocalStorageItem<boolean>(LocalStorageKey.COACH_MUTED, false),
+    );
   }, []);
 
   useEffect(function syncHowlerVolume() {
@@ -37,15 +39,15 @@ export const useVolume = () => {
     setLocalStorageItem(LocalStorageKey.VOLUME, volume);
   }, [volume]);
 
-  useEffect(function syncMutedStateToSounds() {
-    allSounds.forEach((sound) => sound.mute(isMuted));
-  }, [allSounds, isMuted]);
+  useEffect(function syncCoachMutedStateToSounds() {
+    coachSounds.forEach((sound) => sound.mute(isCoachMuted));
+  }, [coachSounds, isCoachMuted]);
 
   return {
-    isMuted,
+    isCoachMuted,
     volume,
 
     onChange,
-    changeIsMuted,
+    changeIsCoachMuted,
   };
 };

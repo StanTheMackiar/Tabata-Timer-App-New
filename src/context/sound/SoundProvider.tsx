@@ -8,18 +8,18 @@ import {
   useState,
 } from "react";
 
-import one from "../../assets/sounds/1.mp3";
-import two from "../../assets/sounds/2.mp3";
-import three from "../../assets/sounds/3.mp3";
-import finalBeep from "../../assets/sounds/321beep.mp3";
-import pause from "../../assets/sounds/pause.mp3";
-import prepare from "../../assets/sounds/prepare.mp3";
-import rest from "../../assets/sounds/rest.mp3";
-import resume from "../../assets/sounds/resume.mp3";
-import startBeep from "../../assets/sounds/startbeep.mp3";
-import stop from "../../assets/sounds/stop.mp3";
-import stopBeep from "../../assets/sounds/stopbeep.mp3";
-import work from "../../assets/sounds/work.mp3";
+import finalBeep from "../../assets/sounds/beeps/321beep.mp3";
+import pause from "../../assets/sounds/beeps/pause.mp3";
+import resume from "../../assets/sounds/beeps/resume.mp3";
+import startBeep from "../../assets/sounds/beeps/startbeep.mp3";
+import stopBeep from "../../assets/sounds/beeps/stopbeep.mp3";
+import one from "../../assets/sounds/coach/1.mp3";
+import two from "../../assets/sounds/coach/2.mp3";
+import three from "../../assets/sounds/coach/3.mp3";
+import prepare from "../../assets/sounds/coach/prepare.mp3";
+import rest from "../../assets/sounds/coach/rest.mp3";
+import stop from "../../assets/sounds/coach/stop.mp3";
+import work from "../../assets/sounds/coach/work.mp3";
 import { SoundContext } from "./useSoundContext";
 
 export const SoundProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -43,6 +43,18 @@ export const SoundProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const [isReady, setIsReady] = useState(false);
   const allSounds = useMemo(() => Object.values(sounds), [sounds]);
+  const coachSounds = useMemo(
+    () => [
+      sounds.prepareSound,
+      sounds.stopSound,
+      sounds.threeSound,
+      sounds.twoSound,
+      sounds.oneSound,
+      sounds.workSound,
+      sounds.restSound,
+    ],
+    [sounds],
+  );
 
   const loadSounds = useCallback(async () => {
     await Promise.all(
@@ -70,6 +82,7 @@ export const SoundProvider: FC<PropsWithChildren> = ({ children }) => {
   const data = {
     ...sounds,
     allSounds,
+    coachSounds,
     isReady,
     loadSounds,
   };

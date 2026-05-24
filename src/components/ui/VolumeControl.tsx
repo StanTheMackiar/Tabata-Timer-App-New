@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useVolume } from "../../hooks";
 
 export const VolumeControl = () => {
-  const { onChange, changeIsMuted, volume, isMuted } = useVolume();
+  const { onChange, changeIsCoachMuted, volume, isCoachMuted } = useVolume();
 
   return (
     <Container>
@@ -27,15 +27,15 @@ export const VolumeControl = () => {
         <Text>{Math.floor(volume * 100)}%</Text>
       </Box>
       <Box>
-        {!isMuted ? (
+        {!isCoachMuted ? (
           <MdRecordVoiceOver
             style={voiceStyle}
-            onClick={() => changeIsMuted(true)}
+            onClick={() => changeIsCoachMuted(true)}
           />
         ) : (
           <MdVoiceOverOff
             style={voiceStyle}
-            onClick={() => changeIsMuted(false)}
+            onClick={() => changeIsCoachMuted(false)}
           />
         )}
       </Box>

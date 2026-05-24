@@ -17,6 +17,7 @@ interface ContextProps {
   isReady: boolean;
   loadSounds: () => Promise<void>;
   allSounds: Howl[];
+  coachSounds: Howl[];
 }
 
 export const SoundContext = createContext({} as ContextProps);

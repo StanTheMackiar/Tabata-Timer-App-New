@@ -1,6 +1,6 @@
 export enum LocalStorageKey {
   ACTIVE_PRESET = "tabata-active-preset",
-  IS_MUTED = "isMuted",
+  COACH_MUTED = "coachMuted",
   PRESETS = "tabata-presets",
   VOLUME = "volume",
 }
