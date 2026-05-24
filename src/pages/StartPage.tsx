@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { Layout } from '../components/layouts/Layout';
 import { CyclesAndTabata, StartStopButton, Timer } from '../components';
+import { TimerType } from '../enums';
 import { useInitialValues } from '../hooks';
 import styled from 'styled-components';
 
@@ -14,9 +15,9 @@ export const StartPage:FC = () => {
          
          {    isLoaded && (
             <TimerContainer>
-               <Timer form={form} currentTimerName='prepare' />
-               <Timer form={form} currentTimerName='work' />
-               <Timer form={form} currentTimerName='rest' />
+               <Timer form={form} currentTimerName={TimerType.PREPARE} />
+               <Timer form={form} currentTimerName={TimerType.WORK} />
+               <Timer form={form} currentTimerName={TimerType.REST} />
             </TimerContainer>
             )
          }

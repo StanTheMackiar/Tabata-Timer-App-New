@@ -1,9 +1,12 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSoundContext } from "../context/sound/useSoundContext";
+import { LocalStorageKey } from "../enums";
 import { InputTypes, TimerFormString } from "../interfaces";
 import { FormProviderProps } from "../interfaces/providers/form-provider.interface";
+import { AppRoute } from "../routes/routes.enum";
+import { useAppNavigate } from "../routes/navigation.helper";
 import { validation } from "../utils";
+import { getLocalStorageItem, setLocalStorageItem } from "../utils/local-storage";
 
 export const initialForm: TimerFormString = {
   prepareM: "00",
@@ -16,9 +19,6 @@ export const initialForm: TimerFormString = {
   tabatas: "03",
 };
 
-const PRESETS_KEY = "tabata-presets";
-const ACTIVE_PRESET_KEY = "tabata-active-preset";
-
 const createInitialPresets = (): TimerFormString[] => [
   initialForm,
   { ...initialForm, workS: "30" },
@@ -26,9 +26,10 @@ const createInitialPresets = (): TimerFormString[] => [
 ];
 
 const readPresets = (): TimerFormString[] => {
-  const stored = JSON.parse(localStorage.getItem(PRESETS_KEY) || "null") as
-    | TimerFormString[]
-    | null;
+  const stored = getLocalStorageItem<TimerFormString[] | null>(
+    LocalStorageKey.PRESETS,
+    null,
+  );
 
   const presets = Array.isArray(stored) ? stored : createInitialPresets();
 
@@ -45,21 +46,27 @@ export const useForm = (): FormProviderProps => {
   const form = presets[activePreset] || initialForm;
   const { prepareSound, loadSounds } = useSoundContext();
 
-  const navigate = useNavigate();
+  const navigate = useAppNavigate();
 
-  useEffect(() => {
+  const hydratePresetsFromLocalStorage = () => {
     setPresets(readPresets());
-    setActivePreset(Number(localStorage.getItem(ACTIVE_PRESET_KEY) || 0));
+    setActivePreset(
+      getLocalStorageItem<number>(LocalStorageKey.ACTIVE_PRESET, 0),
+    );
     loadSounds();
-  }, []);
+  };
 
-  useEffect(() => {
-    localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
-  }, [presets]);
+  const persistPresetsInLocalStorage = () => {
+    setLocalStorageItem(LocalStorageKey.PRESETS, presets);
+  };
 
-  useEffect(() => {
-    localStorage.setItem(ACTIVE_PRESET_KEY, String(activePreset));
-  }, [activePreset]);
+  const persistActivePresetInLocalStorage = () => {
+    setLocalStorageItem(LocalStorageKey.ACTIVE_PRESET, activePreset);
+  };
+
+  useEffect(hydratePresetsFromLocalStorage, []);
+  useEffect(persistPresetsInLocalStorage, [presets]);
+  useEffect(persistActivePresetInLocalStorage, [activePreset]);
 
   const onChange = (
     { target }: ChangeEvent<HTMLInputElement>,
@@ -95,7 +102,7 @@ export const useForm = (): FormProviderProps => {
     await loadSounds();
     prepareSound.play();
 
-    navigate(`/start?preset=${activePreset}`);
+    navigate(AppRoute.START, { preset: activePreset });
   };
 
   return {

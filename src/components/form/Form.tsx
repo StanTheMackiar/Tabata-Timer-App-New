@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { StartStopButton } from ".";
 import { useFormContext } from "../../context/form/useFormContext";
+import { TimerType } from "../../enums";
 import {
   FormEditor,
   FormTimerEditor,
@@ -18,14 +19,18 @@ import {
 } from "./styles/FormStyles";
 
 const timerEditors: FormTimerEditor[] = [
-  { kind: "timer", title: "prepare", minutes: "prepareM", seconds: "prepareS" },
-  { kind: "timer", title: "work", minutes: "workM", seconds: "workS" },
-  { kind: "timer", title: "rest", minutes: "restM", seconds: "restS" },
+  {
+    kind: "timer",
+    title: TimerType.PREPARE,
+    minutes: "prepareM",
+    seconds: "prepareS",
+  },
+  { kind: "timer", title: TimerType.WORK, minutes: "workM", seconds: "workS" },
+  { kind: "timer", title: TimerType.REST, minutes: "restM", seconds: "restS" },
 ];
 
 export const Form: FC = () => {
-  const { activePreset, form, onSubmit, setActivePreset, stepField } =
-    useFormContext();
+  const { activePreset, form, onSubmit, setActivePreset } = useFormContext();
 
   const [editor, setEditor] = useState<FormEditor | null>(null);
 

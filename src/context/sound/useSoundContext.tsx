@@ -4,7 +4,9 @@ import { createContext, useContext } from "react";
 interface ContextProps {
   finalBeepSound: Howl;
   oneSound: Howl;
+  pauseSound: Howl;
   prepareSound: Howl;
+  resumeSound: Howl;
   restSound: Howl;
   startBeepSound: Howl;
   stopBeepSound: Howl;

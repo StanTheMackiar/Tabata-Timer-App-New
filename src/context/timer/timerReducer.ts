@@ -1,5 +1,6 @@
 import { useReducer } from "react";
-import { CurrentStateTimer, TimerTypes } from "../../interfaces";
+import { TimerType } from "../../enums";
+import { CurrentStateTimer } from "../../interfaces";
 
 export enum TimerActionTypes {
   RUN_TIMER = "run_timer",
@@ -25,8 +26,8 @@ export interface TimerState {
 }
 
 type TimerActionType =
-  | { type: TimerActionTypes.RUN_TIMER; payload: { timerName: TimerTypes } }
-  | { type: TimerActionTypes.STOP_TIMER; payload: { timerName: TimerTypes } }
+  | { type: TimerActionTypes.RUN_TIMER; payload: { timerName: TimerType } }
+  | { type: TimerActionTypes.STOP_TIMER; payload: { timerName: TimerType } }
   | { type: TimerActionTypes.STOP_ALL_TIMERS }
   | { type: TimerActionTypes.CHANGE_MINUTES; payload: number }
   | { type: TimerActionTypes.CHANGE_SECONDS; payload: number }
@@ -37,9 +38,9 @@ type TimerActionType =
 
 const TIMER_INITIAL_STATE: TimerState = {
   timerState: {
-    prepare: false,
-    work: false,
-    rest: false,
+    [TimerType.PREPARE]: false,
+    [TimerType.WORK]: false,
+    [TimerType.REST]: false,
   },
   timer: {
     minutes: 0,
@@ -80,9 +81,9 @@ export const timerReducer = (
         ...state,
         timerState: {
           ...state.timerState,
-          prepare: false,
-          rest: false,
-          work: false,
+          [TimerType.PREPARE]: false,
+          [TimerType.REST]: false,
+          [TimerType.WORK]: false,
         },
       };
     }

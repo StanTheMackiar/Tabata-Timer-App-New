@@ -1,15 +1,16 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { HomePage, StartPage } from "../pages";
+import { AppRoute } from "./routes.enum";
   
   export const Navigation = () => (
     
           <Routes>
             <Route
-              path="/"
+              path={AppRoute.HOME}
               element={<HomePage />}
             />
             <Route
-              path="/start"
+              path={AppRoute.START}
               element={<StartPage/>}
             />
 
@@ -17,7 +18,7 @@ import { HomePage, StartPage } from "../pages";
               path="/*"
               element={
                 <Navigate
-                  to="/"
+                  to={AppRoute.HOME}
                   replace
                 />
               }

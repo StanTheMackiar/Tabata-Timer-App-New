@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { TimerTypes } from "../../interfaces";
+import { TimerType } from "../../enums";
 import { TimerState } from "./timerReducer";
 
 interface ContextProps {
@@ -9,9 +9,9 @@ interface ContextProps {
   changeMinutes: (value: number) => void;
   changeSeconds: (value: number) => void;
   changeTabatas: (value: number) => void;
-  runTimer: (timerName: TimerTypes) => void;
+  runTimer: (timerName: TimerType) => void;
   stopAllTimers: () => void;
-  stopTimer: (timerName: TimerTypes) => void;
+  stopTimer: (timerName: TimerType) => void;
   togglePause: () => void;
   setPause: (value: boolean) => void;
 }

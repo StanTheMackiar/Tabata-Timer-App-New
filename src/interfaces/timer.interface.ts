@@ -20,7 +20,6 @@ export interface TimerFormNumber {
   initialTabatas: number;
 }
 
-export type TimerTypes = "prepare" | "work" | "rest";
 export type InputTypes = "minutes" | "seconds" | "cycles" | "tabatas";
 
 export interface ITimers {
@@ -30,7 +29,8 @@ export interface ITimers {
 }
 
 export interface CurrentStateTimer {
-  prepare: boolean;
-  work: boolean;
-  rest: boolean;
+  [TimerType.PREPARE]: boolean;
+  [TimerType.WORK]: boolean;
+  [TimerType.REST]: boolean;
 }
+import { TimerType } from "../enums";

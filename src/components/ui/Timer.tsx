@@ -5,12 +5,12 @@ import { animated } from "@react-spring/web";
 import styled from "styled-components";
 import { useTimer } from "../../hooks";
 
-import { TimerTypes } from "../../interfaces";
+import { TimerType } from "../../enums";
 import { TimerFormNumber } from "../../interfaces/timer.interface";
 import { PauseTimer } from "./PauseTimer";
 
 export interface Props {
-  currentTimerName: TimerTypes;
+  currentTimerName: TimerType;
   form: TimerFormNumber;
 }
 

@@ -1,4 +1,5 @@
-import { TimerFormString, TimerTypes } from "../timer.interface";
+import { TimerType } from "../../enums";
+import { TimerFormString } from "../timer.interface";
 
 export type TimerField = keyof Pick<
   TimerFormString,
@@ -10,7 +11,7 @@ export type CountField = keyof Pick<TimerFormString, "cycles" | "tabatas">;
 export type FormEditor =
   | {
       kind: "timer";
-      title: TimerTypes;
+      title: TimerType;
       minutes: TimerField;
       seconds: TimerField;
     }

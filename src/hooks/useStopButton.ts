@@ -1,20 +1,21 @@
 import { Howler } from "howler";
-import { useNavigate } from "react-router-dom";
 import { useSoundContext } from "../context/sound/useSoundContext";
 import { useTimerContext } from "../context/timer/useTimerContex";
+import { AppRoute } from "../routes/routes.enum";
+import { useAppNavigate } from "../routes/navigation.helper";
 
 export const useStopButton = () => {
   const { stopBeepSound, stopSound } = useSoundContext();
   const { stopAllTimers } = useTimerContext();
 
-  const navigate = useNavigate();
+  const navigate = useAppNavigate();
 
   const stopTimer = () => {
     Howler.stop();
     stopBeepSound.play();
     stopSound.play();
     stopAllTimers();
-    navigate("/");
+    navigate(AppRoute.HOME);
   };
 
   return {

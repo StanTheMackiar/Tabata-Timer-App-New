@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { LocalStorageKey } from "../enums";
 import { TimerFormNumber, TimerFormString } from "../interfaces";
+import { getLocalStorageItem } from "../utils/local-storage";
 import { initialForm } from "./useForm";
 
 export interface InitialValuesReturn {
@@ -15,9 +17,10 @@ export const useInitialValues = () => {
   const [form, setForm] = useState<TimerFormNumber>({} as TimerFormNumber);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
+  const hydrateTimerValuesFromPreset = () => {
     const presetIndex = Number(
-      params.get("preset") || localStorage.getItem("tabata-active-preset") || 0,
+      params.get("preset") ||
+        getLocalStorageItem<number>(LocalStorageKey.ACTIVE_PRESET, 0),
     );
     const selectedPreset = getPresetFromStorage(presetIndex);
     const valuesInParams: TimerFormNumber = {
@@ -33,7 +36,9 @@ export const useInitialValues = () => {
 
     setForm(valuesInParams);
     setIsLoaded(true);
-  }, [params]);
+  };
+
+  useEffect(hydrateTimerValuesFromPreset, [params]);
 
   return {
     form,
@@ -42,8 +47,9 @@ export const useInitialValues = () => {
 };
 
 const getPresetFromStorage = (index: number): TimerFormString => {
-  const presets = JSON.parse(
-    localStorage.getItem("tabata-presets") || "[]",
-  ) as TimerFormString[];
+  const presets = getLocalStorageItem<TimerFormString[]>(
+    LocalStorageKey.PRESETS,
+    [],
+  );
   return { ...initialForm, ...(presets[index] || initialForm) };
 };

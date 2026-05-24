@@ -1,6 +1,8 @@
 import { Howler } from "howler";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useSoundContext } from "../context/sound/useSoundContext";
+import { LocalStorageKey } from "../enums";
+import { getLocalStorageItem, setLocalStorageItem } from "../utils/local-storage";
 
 export const useVolume = () => {
   const { allSounds } = useSoundContext();
@@ -16,31 +18,34 @@ export const useVolume = () => {
 
   const changeIsMuted = (state: boolean) => {
     setIsMuted(state);
-    localStorage.setItem("isMuted", JSON.stringify(state));
+    setLocalStorageItem(LocalStorageKey.IS_MUTED, state);
   };
 
-  useEffect(() => {
-    const initialVolume = localStorage.getItem("volume") || "0.5";
-    setVolume(Number(initialVolume));
-  }, []);
+  const hydrateVolumeFromLocalStorage = () => {
+    setVolume(getLocalStorageItem<number>(LocalStorageKey.VOLUME, 0.5));
+  };
 
-  useEffect(() => {
-    const initialIsMuted: boolean =
-      JSON.parse(localStorage.getItem("isMuted") as string) || false;
-    setIsMuted(initialIsMuted);
-  }, []);
+  const hydrateMutedStateFromLocalStorage = () => {
+    setIsMuted(getLocalStorageItem<boolean>(LocalStorageKey.IS_MUTED, false));
+  };
 
-  useEffect(() => {
+  const syncHowlerVolume = () => {
     Howler.volume(volume);
-  }, [volume]);
+  };
 
-  useEffect(() => {
-    localStorage.setItem("volume", volume.toString());
-  }, [volume]);
+  const persistVolumeInLocalStorage = () => {
+    setLocalStorageItem(LocalStorageKey.VOLUME, volume);
+  };
 
-  useEffect(() => {
+  const syncMutedStateToSounds = () => {
     allSounds.forEach((sound) => sound.mute(isMuted));
-  }, [allSounds, isMuted]);
+  };
+
+  useEffect(hydrateVolumeFromLocalStorage, []);
+  useEffect(hydrateMutedStateFromLocalStorage, []);
+  useEffect(syncHowlerVolume, [volume]);
+  useEffect(persistVolumeInLocalStorage, [volume]);
+  useEffect(syncMutedStateToSounds, [allSounds, isMuted]);
 
   return {
     isMuted,

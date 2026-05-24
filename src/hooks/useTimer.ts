@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { Props as useTimerProps } from "../components";
 import { useSoundContext } from "../context/sound/useSoundContext";
 import { useTimerContext } from "../context/timer/useTimerContex";
+import { TimerType } from "../enums";
 import { timers } from "../utils";
 import { useInterval } from "./useInterval";
 import { useStopButton } from "./useStopButton";
@@ -20,6 +21,8 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     twoSound,
     workSound,
     restSound,
+    pauseSound,
+    resumeSound,
   } = useSoundContext();
 
   const {
@@ -59,18 +62,18 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
   );
   const { minutes, seconds, cycles, tabatas } = state.timer;
 
-  useEffect(() => {
-    if (currentTimerName !== "prepare") return;
+  const initializePrepareTimer = () => {
+    if (currentTimerName !== TimerType.PREPARE) return;
 
     changeMinutes(form.prepareM);
     changeSeconds(form.prepareS);
     changeCycles(form.initialCycles);
     changeTabatas(form.initialTabatas);
-    runTimer("prepare");
+    runTimer(TimerType.PREPARE);
     setPause(false);
-  }, []);
+  };
 
-  useEffect(() => {
+  const armCurrentTimerEndTime = () => {
     if (!currentTimerState) {
       activatedRef.current = false;
       return;
@@ -85,9 +88,9 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
       beepedRef.current = new Set();
       activatedRef.current = true;
     }
-  }, [currentTimerState]);
+  };
 
-  useEffect(() => {
+  const syncPauseStateWithTimerClock = () => {
     if (!currentTimerState || !endAtRef.current) return;
 
     if (state.isPaused && !pausedRef.current) {
@@ -102,7 +105,11 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
       });
       pausedRef.current = false;
     }
-  }, [currentTimerState, state.isPaused]);
+  };
+
+  useEffect(initializePrepareTimer, []);
+  useEffect(armCurrentTimerEndTime, [currentTimerState]);
+  useEffect(syncPauseStateWithTimerClock, [currentTimerState, state.isPaused]);
 
   const getRemainingSeconds = () => {
     if (!endAtRef.current) return secondsFromTimer(minutes, seconds);
@@ -134,19 +141,19 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     completedRef.current = true;
     stopAllTimers();
 
-    if (currentTimerName === "prepare") {
+    if (currentTimerName === TimerType.PREPARE) {
       changeMinutes(form.workM);
       changeSeconds(form.workS);
       workSound.play();
-      runTimer("work");
+      runTimer(TimerType.WORK);
       return;
     }
 
-    if (currentTimerName === "work") {
+    if (currentTimerName === TimerType.WORK) {
       changeMinutes(form.restM);
       changeSeconds(form.restS);
       restSound.play();
-      runTimer("rest");
+      runTimer(TimerType.REST);
       return;
     }
 
@@ -163,7 +170,16 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     changeMinutes(form.workM);
     changeSeconds(form.workS);
     workSound.play();
-    runTimer("work");
+    runTimer(TimerType.WORK);
+  };
+
+  const toggleTimerPause = () => {
+    if (state.isPaused) {
+      resumeSound.play();
+    } else {
+      pauseSound.play();
+    }
+    togglePause();
   };
 
   useInterval(
@@ -201,7 +217,7 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     bgColor,
     currentTimerState,
     minutes,
-    togglePause,
+    togglePause: toggleTimerPause,
     seconds,
     isPaused: state.isPaused,
     workTimerStyle,
