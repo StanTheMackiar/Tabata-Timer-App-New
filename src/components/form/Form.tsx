@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { StartStopButton } from ".";
 import { useFormContext } from "../../context/form/useFormContext";
 import { TimerType } from "../../enums";
+import { PRESETS_QUANTITY } from "../../hooks";
 import {
   FormEditor,
   FormTimerEditor,
@@ -37,7 +38,7 @@ export const Form: FC = () => {
   return (
     <StyledForm onSubmit={onSubmit}>
       <PresetBar>
-        {[0, 1, 2].map((index) => (
+        {Array.from({ length: PRESETS_QUANTITY }).map((_, index) => (
           <PresetButton
             key={index}
             active={activePreset === index}

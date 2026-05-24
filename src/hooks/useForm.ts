@@ -3,10 +3,13 @@ import { useSoundContext } from "../context/sound/useSoundContext";
 import { LocalStorageKey } from "../enums";
 import { InputTypes, TimerFormString } from "../interfaces";
 import { FormProviderProps } from "../interfaces/providers/form-provider.interface";
-import { AppRoute } from "../routes/routes.enum";
 import { useAppNavigate } from "../routes/navigation.helper";
+import { AppRoute } from "../routes/routes.enum";
 import { validation } from "../utils";
-import { getLocalStorageItem, setLocalStorageItem } from "../utils/local-storage";
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "../utils/local-storage";
 
 export const initialForm: TimerFormString = {
   prepareM: "00",
@@ -19,10 +22,13 @@ export const initialForm: TimerFormString = {
   tabatas: "03",
 };
 
+export const PRESETS_QUANTITY = 4;
+
 const createInitialPresets = (): TimerFormString[] => [
   initialForm,
   { ...initialForm, workS: "30" },
   { ...initialForm, workS: "40" },
+  { ...initialForm, workS: "50", restS: "10" },
 ];
 
 const readPresets = (): TimerFormString[] => {
@@ -56,13 +62,19 @@ export const useForm = (): FormProviderProps => {
     loadSounds();
   }, []);
 
-  useEffect(function persistPresetsInLocalStorage() {
-    setLocalStorageItem(LocalStorageKey.PRESETS, presets);
-  }, [presets]);
+  useEffect(
+    function persistPresetsInLocalStorage() {
+      setLocalStorageItem(LocalStorageKey.PRESETS, presets);
+    },
+    [presets],
+  );
 
-  useEffect(function persistActivePresetInLocalStorage() {
-    setLocalStorageItem(LocalStorageKey.ACTIVE_PRESET, activePreset);
-  }, [activePreset]);
+  useEffect(
+    function persistActivePresetInLocalStorage() {
+      setLocalStorageItem(LocalStorageKey.ACTIVE_PRESET, activePreset);
+    },
+    [activePreset],
+  );
 
   const onChange = (
     { target }: ChangeEvent<HTMLInputElement>,
@@ -90,7 +102,7 @@ export const useForm = (): FormProviderProps => {
   };
 
   const setActivePreset = (index: number) => {
-    setActivePresetState(Math.min(2, Math.max(0, index)));
+    setActivePresetState(Math.min(PRESETS_QUANTITY - 1, Math.max(0, index)));
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
