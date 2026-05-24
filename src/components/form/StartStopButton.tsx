@@ -2,6 +2,7 @@ import { FC } from "react";
 
 import styled from "styled-components";
 import { useStopButton } from "../../hooks/useStopButton";
+import { BREAKPOINTS } from "../../utils/breakpoints";
 
 interface Props {
   action?: ButtonAction;
@@ -34,11 +35,18 @@ const Button = styled.button<Props>`
       ? "clamp(4rem, 12dvh, 5.6rem)"
       : "clamp(4rem, 12dvh, 5.2rem)"};
   font-family: var(--pf-font);
-  font-size: 42px;
+  font-size: clamp(2.2rem, 9vw, 3.2rem);
   font-weight: 800;
   text-transform: uppercase;
   user-select: none;
   position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
+    font-size: clamp(2rem, 3.8vw, 2.8rem);
+  }
+
   &:hover {
     cursor: pointer;
     background-color: var(--pf-accent);

@@ -45,11 +45,11 @@ const Subtitle = styled.h4`
 const Time = styled.h2`
   color: var(--pf-white);
   font-family: var(--pf-font);
-  font-size: 80px;
+  font-size: clamp(3.5rem, 14vw, 5rem);
   font-weight: 900;
   line-height: 1;
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
-    font-size: clamp(80px, 13vw, 100px);
+    font-size: clamp(3.4rem, 5.8vw, 5rem);
   }
 `;

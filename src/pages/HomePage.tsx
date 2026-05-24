@@ -26,7 +26,7 @@ const HomeContent = styled.section`
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
     display: grid;
-    grid-template-columns: minmax(18rem, 0.42fr) minmax(34rem, 1fr);
+    grid-template-columns: minmax(12rem, 0.24fr) minmax(0, 1fr);
     align-items: stretch;
   }
 `;

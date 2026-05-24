@@ -10,7 +10,7 @@ const StyledForm = styled.form`
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
     display: grid;
-    grid-template-columns: minmax(28rem, 1fr) minmax(16rem, 0.38fr);
+    grid-template-columns: minmax(0, 0.76fr) minmax(11.5rem, 0.24fr);
     grid-template-rows: auto 1fr auto;
   }
 `;
@@ -22,20 +22,20 @@ const PresetBar = styled.div`
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
     grid-column: 1 / -1;
-    justify-content: flex-start;
+    justify-content: center;
   }
 `;
 
 const PresetButton = styled.button<{ active: boolean }>`
-  width: 4.25rem;
-  height: 3rem;
+  width: clamp(3.5rem, 6vw, 4.25rem);
+  height: clamp(2.6rem, 6dvh, 3rem);
   border: 1px solid
     ${({ active }) => (active ? "var(--pf-accent)" : "var(--pf-line)")};
   border-radius: 0.7rem;
   background: ${({ active }) =>
     active ? "var(--pf-accent)" : "var(--pf-panel)"};
   color: ${({ active }) => (active ? "#111" : "var(--pf-white)")};
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
   font-weight: 900;
 `;
 
@@ -66,7 +66,7 @@ const TimerButton = styled.button<{ bgColor: string }>`
   font-size: 24px;
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
-    font-size: clamp(36px, 2.5rem, 64px);
+    font-size: clamp(2rem, 3.4vw, 3rem);
   }
 
   span {
@@ -77,6 +77,7 @@ const TimerButton = styled.button<{ bgColor: string }>`
   strong {
     font-family: var(--pf-font);
     font-weight: 800;
+    white-space: nowrap;
   }
 `;
 
@@ -91,7 +92,7 @@ const StatsRow = styled.div`
 `;
 
 const StatButton = styled.button`
-  min-height: clamp(4rem, 13dvh, 6.5rem);
+  min-height: clamp(3.6rem, 12dvh, 6.5rem);
   border: 0;
   border-radius: 0.85rem;
   background: var(--pf-panel-alt);
@@ -100,16 +101,22 @@ const StatButton = styled.button`
   place-items: center;
   padding: 0.5rem;
 
+  overflow: hidden;
+
   strong {
-    font-size: 56px;
+    font-size: clamp(2.4rem, 6vw, 4rem);
     line-height: 0.9;
     font-weight: 800;
   }
 
   span {
     color: var(--pf-muted);
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2vw, 1rem);
     font-weight: 800;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 

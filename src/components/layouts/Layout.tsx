@@ -25,8 +25,8 @@ const AppContainer = styled.main`
   overflow: hidden;
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
-    width: min(100dvw, 1400px);
-    padding: 0 1.25rem;
+    width: 100dvw;
+    padding: 0 clamp(0.75rem, 2vw, 1.25rem);
   }
 `;
 
