@@ -28,7 +28,6 @@ export const useTimer = ({ form }: useTimerProps) => {
     changeMinutes,
     changeSeconds,
     runTimer,
-    stopAllTimers,
     state,
     togglePause,
     setPause,
@@ -36,7 +35,6 @@ export const useTimer = ({ form }: useTimerProps) => {
 
   const stopButton = useStopButton();
   const endAtRef = useRef<DateTime | null>(null);
-  const activatedRef = useRef(false);
   const completedRef = useRef(false);
   const pausedRef = useRef(false);
   const pauseRemainingRef = useRef(0);
@@ -47,7 +45,7 @@ export const useTimer = ({ form }: useTimerProps) => {
   const { minutes, seconds, cycles, tabatas } = state.timer;
 
   useEffect(function initializePrepareTimer() {
-    if (!!state.activeTimer) return;
+    if (state.activeTimer) return;
 
     runTimer({
       timerName: TimerType.PREPARE,
@@ -62,19 +60,16 @@ export const useTimer = ({ form }: useTimerProps) => {
   useEffect(
     function armCurrentTimerEndTime() {
       if (!state.activeTimer) {
-        activatedRef.current = false;
+        endAtRef.current = null;
         return;
       }
 
-      if (!activatedRef.current) {
-        endAtRef.current = DateTime.now().plus({
-          seconds: secondsFromTimer(minutes, seconds),
-        });
-        completedRef.current = false;
-        pausedRef.current = false;
-        beepedRef.current = new Set();
-        activatedRef.current = true;
-      }
+      endAtRef.current = DateTime.now().plus({
+        seconds: secondsFromTimer(minutes, seconds),
+      });
+      completedRef.current = false;
+      pausedRef.current = false;
+      beepedRef.current = new Set();
     },
     [state.activeTimer],
   );
@@ -127,11 +122,8 @@ export const useTimer = ({ form }: useTimerProps) => {
   const finishCurrentTimer = () => {
     if (completedRef.current) return;
     completedRef.current = true;
-    stopAllTimers();
 
     if (state.activeTimer === TimerType.PREPARE) {
-      console.log({ form, state });
-
       workSound.play();
       runTimer({
         timerName: TimerType.WORK,

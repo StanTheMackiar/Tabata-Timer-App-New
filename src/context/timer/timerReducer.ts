@@ -112,6 +112,12 @@ export const timerReducer = (
         isPaused: !state.isPaused,
       };
     }
+    case TimerActionTypes.SET_PAUSE: {
+      return {
+        ...state,
+        isPaused: action.payload,
+      };
+    }
 
     default:
       return state;
