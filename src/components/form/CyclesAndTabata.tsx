@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { TimerContext } from "../../context/timer/useTimerContex";
 import { InputTypes, TimerFormString } from "../../interfaces";
+import { AppRoute } from "../../routes/routes.enum";
 
 interface Props {
   value?: TimerFormString;
@@ -29,8 +30,7 @@ export const CyclesAndTabata: FC<Props> = ({
   const { cycles, tabatas } = state.timer;
 
   const location = useLocation();
-  const isTimerActive =
-    location.pathname === "/start" || location.pathname === "/start/";
+  const isTimerActive = location.pathname.startsWith(AppRoute.START);
 
   return (
     <Container isTimerActive={isTimerActive}>
@@ -51,6 +51,7 @@ export const CyclesAndTabata: FC<Props> = ({
         min="1"
         max="99"
       />
+
       <Label htmlFor="tabatas">TABATAS</Label>
       <Input
         id="tabatas"
@@ -73,35 +74,40 @@ export const CyclesAndTabata: FC<Props> = ({
 };
 
 const Container = styled.section<{ isTimerActive: boolean }>`
-  display: flex;
-  flex: ${({ isTimerActive }) => (isTimerActive ? 2 : 1)};
-  flex-direction: row;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
   align-items: center;
-  background-color: rgb(92, 42, 139);
-  gap: 1rem;
-  margin: 0 1rem 1rem;
-  border-radius: 0.35rem;
+  gap: clamp(0.45rem, 1.5vw, 10px);
+  border-radius: 0.85rem;
   background-color: transparent;
   padding: 0;
   transition: all 0.3s ease-in-out;
+
+  @media (min-width: 1050px) {
+    grid-template-columns: 1fr 1fr;
+  }
 `;
 
 const Input = styled.input`
-  width: min(28vw, 8rem);
-  min-height: 6rem;
+  width: 100%;
+  min-height: clamp(4.4rem, 14dvh, 6rem);
   text-align: center;
-  font-size: clamp(2.75rem, 14vw, 5rem);
+  font-size: clamp(2.4rem, 11vw, 4.5rem);
   font-weight: 900;
-  background-color: var(--pf-white);
+  background-color: var(--pf-panel-alt);
   border: none;
-  border-radius: 0.35rem;
-  color: #111;
+  border-radius: 0.85rem;
+  color: var(--pf-white);
   outline: none;
 `;
+
 const Label = styled.label`
   text-align: center;
   display: inline-block;
   font-weight: 800;
-  color: var(--pf-white);
+  color: var(--pf-muted);
+
+  @media (min-width: 1050px) {
+    align-self: end;
+  }
 `;

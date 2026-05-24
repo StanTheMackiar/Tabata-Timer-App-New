@@ -27,19 +27,22 @@ const Button = styled.button<Props>`
   background-color: ${({ action }) =>
     action === "start" ? "var(--pf-white)" : "var(--pf-white)"};
   border: none;
-  border-radius: 0.35rem;
-  color: #111;
-  min-height: ${({ action }) => (action === "start" ? "6rem" : "5.5rem")};
-  font-family: "Arial Black", Impact, sans-serif;
-  font-size: clamp(2.5rem, 14vw, 5rem);
-  font-weight: 900;
+  border-radius: 0.85rem;
+  color: var(--pf-dark-text);
+  min-height: ${({ action }) =>
+    action === "start"
+      ? "clamp(4rem, 12dvh, 5.6rem)"
+      : "clamp(4rem, 12dvh, 5.2rem)"};
+  font-family: var(--pf-font);
+  font-size: 42px;
+  font-weight: 800;
   text-transform: uppercase;
   user-select: none;
   position: relative;
   &:hover {
     cursor: pointer;
-    background-color: var(--pf-green);
-    color: #111;
+    background-color: var(--pf-accent);
+    color: var(--pf-dark-text);
     transition: all 0.3s ease;
   }
 `;

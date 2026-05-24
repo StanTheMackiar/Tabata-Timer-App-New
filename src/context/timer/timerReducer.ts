@@ -1,11 +1,10 @@
 import { useReducer } from "react";
 import { TimerType } from "../../enums";
-import { CurrentStateTimer } from "../../interfaces";
+import { RunTimerParams } from "./useTimerContex";
 
 export enum TimerActionTypes {
   RUN_TIMER = "run_timer",
-  STOP_TIMER = "stop_timer",
-  STOP_ALL_TIMERS = "stop_all_timers",
+  STOP_SESSION = "stop_session",
   CHANGE_MINUTES = "change_minutes",
   CHANGE_SECONDS = "change_seconds",
   CHANGE_CYCLES = "change_cycles",
@@ -15,7 +14,7 @@ export enum TimerActionTypes {
 }
 
 export interface TimerState {
-  timerState: CurrentStateTimer;
+  activeTimer: TimerType | null;
   timer: {
     minutes: number;
     seconds: number;
@@ -26,9 +25,11 @@ export interface TimerState {
 }
 
 type TimerActionType =
-  | { type: TimerActionTypes.RUN_TIMER; payload: { timerName: TimerType } }
-  | { type: TimerActionTypes.STOP_TIMER; payload: { timerName: TimerType } }
-  | { type: TimerActionTypes.STOP_ALL_TIMERS }
+  | {
+      type: TimerActionTypes.RUN_TIMER;
+      payload: RunTimerParams;
+    }
+  | { type: TimerActionTypes.STOP_SESSION }
   | { type: TimerActionTypes.CHANGE_MINUTES; payload: number }
   | { type: TimerActionTypes.CHANGE_SECONDS; payload: number }
   | { type: TimerActionTypes.CHANGE_CYCLES; payload: number }
@@ -37,11 +38,7 @@ type TimerActionType =
   | { type: TimerActionTypes.SET_PAUSE; payload: boolean };
 
 const TIMER_INITIAL_STATE: TimerState = {
-  timerState: {
-    [TimerType.PREPARE]: false,
-    [TimerType.WORK]: false,
-    [TimerType.REST]: false,
-  },
+  activeTimer: null,
   timer: {
     minutes: 0,
     seconds: 0,
@@ -57,35 +54,21 @@ export const timerReducer = (
 ): TimerState => {
   switch (action.type) {
     case TimerActionTypes.RUN_TIMER: {
-      const { timerName } = action.payload;
+      const { timerName, minutes, seconds, cycles, tabatas } = action.payload;
       return {
         ...state,
-        timerState: {
-          ...state.timerState,
-          [timerName]: true,
+        activeTimer: timerName,
+        timer: {
+          ...state.timer,
+          minutes,
+          seconds,
+          ...(cycles != null && { cycles }),
+          ...(tabatas != null && { tabatas }),
         },
       };
     }
-    case TimerActionTypes.STOP_TIMER: {
-      const { timerName } = action.payload;
-      return {
-        ...state,
-        timerState: {
-          ...state.timerState,
-          [timerName]: false,
-        },
-      };
-    }
-    case TimerActionTypes.STOP_ALL_TIMERS: {
-      return {
-        ...state,
-        timerState: {
-          ...state.timerState,
-          [TimerType.PREPARE]: false,
-          [TimerType.REST]: false,
-          [TimerType.WORK]: false,
-        },
-      };
+    case TimerActionTypes.STOP_SESSION: {
+      return TIMER_INITIAL_STATE;
     }
     case TimerActionTypes.CHANGE_MINUTES: {
       return {

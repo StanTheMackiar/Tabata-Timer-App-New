@@ -34,7 +34,7 @@ const Container = styled.div`
     flex: 1;
     outline: none;
     border: none;
-    color: #111;
+    color: var(--pf-dark-text);
     font-size: 3rem;
 
 `

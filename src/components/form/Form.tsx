@@ -59,6 +59,7 @@ export const Form: FC = () => {
             onClick={() => setEditor(item)}
           >
             <span>{item.title}</span>
+
             <strong>
               {form[item.minutes]}:{form[item.seconds]}
             </strong>
@@ -76,6 +77,7 @@ export const Form: FC = () => {
           <strong>{form.cycles}</strong>
           <span>Cycles</span>
         </StatButton>
+
         <StatButton
           type="button"
           onClick={() =>

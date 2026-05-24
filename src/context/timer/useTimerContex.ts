@@ -2,6 +2,15 @@ import { createContext, useContext } from "react";
 import { TimerType } from "../../enums";
 import { TimerState } from "./timerReducer";
 
+export type RunTimerParams = {
+  timerName: TimerType;
+  minutes: number;
+  seconds: number;
+  cycles?: number;
+  tabatas?: number;
+};
+export type RunTimerFun = (params: RunTimerParams) => void;
+
 interface ContextProps {
   state: TimerState;
 
@@ -9,9 +18,8 @@ interface ContextProps {
   changeMinutes: (value: number) => void;
   changeSeconds: (value: number) => void;
   changeTabatas: (value: number) => void;
-  runTimer: (timerName: TimerType) => void;
+  runTimer: RunTimerFun;
   stopAllTimers: () => void;
-  stopTimer: (timerName: TimerType) => void;
   togglePause: () => void;
   setPause: (value: boolean) => void;
 }

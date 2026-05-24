@@ -27,10 +27,3 @@ export interface ITimers {
   work: number;
   rest: number;
 }
-
-export interface CurrentStateTimer {
-  [TimerType.PREPARE]: boolean;
-  [TimerType.WORK]: boolean;
-  [TimerType.REST]: boolean;
-}
-import { TimerType } from "../enums";

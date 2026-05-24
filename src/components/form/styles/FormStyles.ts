@@ -2,84 +2,111 @@ import styled from "styled-components";
 
 const StyledForm = styled.form`
   display: flex;
-  flex: 8;
+  flex: 1;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
+  min-height: 0;
+  gap: clamp(0.65rem, 2dvh, 1rem);
+
+  @media (min-width: 1050px) {
+    display: grid;
+    grid-template-columns: minmax(28rem, 1fr) minmax(16rem, 0.38fr);
+    grid-template-rows: auto 1fr auto;
+  }
 `;
 
 const PresetBar = styled.div`
   display: flex;
   justify-content: center;
   gap: 0.75rem;
+
+  @media (min-width: 1050px) {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
 `;
 
 const PresetButton = styled.button<{ active: boolean }>`
   width: 4.25rem;
   height: 3rem;
-  border: 2px solid
-    ${({ active }) => (active ? "var(--pf-green)" : "var(--pf-line)")};
-  border-radius: 0.35rem;
+  border: 1px solid
+    ${({ active }) => (active ? "var(--pf-accent)" : "var(--pf-line)")};
+  border-radius: 0.7rem;
   background: ${({ active }) =>
-    active ? "var(--pf-green)" : "var(--pf-panel)"};
+    active ? "var(--pf-accent)" : "var(--pf-panel)"};
   color: ${({ active }) => (active ? "#111" : "var(--pf-white)")};
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 900;
 `;
 
 const TimersGrid = styled.div`
   display: grid;
-  gap: 0.75rem;
+  flex: 1;
+  min-height: 0;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.6rem, 1.8dvh, 0.9rem);
+
+  @media (min-width: 1050px) {
+    grid-row: 2 / 4;
+  }
 `;
 
 const TimerButton = styled.button<{ bgColor: string }>`
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  min-height: 5.8rem;
+  min-height: 0;
   border: 0;
-  border-radius: 0.35rem;
+  border-radius: 0.85rem;
   background: ${({ bgColor }) => bgColor};
-  color: #111;
-  padding: 1rem 1.25rem;
+  color: var(--pf-dark-text);
+  padding: clamp(0.75rem, 2dvh, 1.2rem);
   text-align: left;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  font-size: 28px;
+
+  @media (min-width: 1050px) {
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+  }
 
   span {
-    font-size: clamp(1.7rem, 8vw, 2.75rem);
-    font-weight: 900;
+    font-weight: 600;
     text-transform: capitalize;
   }
 
   strong {
-    font-family: "Arial Black", Impact, sans-serif;
-    font-size: clamp(1.8rem, 8vw, 2.8rem);
+    font-family: var(--pf-font);
+    font-weight: 800;
   }
 `;
 
 const StatsRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: clamp(0.6rem, 1.8dvh, 1rem);
+
+  @media (min-width: 1050px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const StatButton = styled.button`
-  min-height: 7rem;
+  min-height: clamp(4rem, 13dvh, 6.5rem);
   border: 0;
-  border-radius: 0.35rem;
-  background: var(--pf-white);
-  color: #141414;
+  border-radius: 0.85rem;
+  background: var(--pf-panel-alt);
+  color: var(--pf-white);
   display: grid;
   place-items: center;
   padding: 0.5rem;
 
   strong {
-    font-size: clamp(3rem, 16vw, 5rem);
+    font-size: 56px;
     line-height: 0.9;
-    font-weight: 900;
+    font-weight: 800;
   }
 
   span {
-    color: #303840;
+    color: var(--pf-muted);
     font-size: 1rem;
     font-weight: 800;
   }
@@ -98,14 +125,14 @@ const Overlay = styled.div`
 const Dialog = styled.div`
   width: min(92vw, 24rem);
   border: 1px solid var(--pf-line);
-  border-radius: 0.5rem;
+  border-radius: 0.85rem;
   background: var(--pf-panel);
   padding: 1.25rem;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
 `;
 
 const DialogTitle = styled.h2`
-  color: var(--pf-green);
+  color: var(--pf-accent);
   font-size: 1.2rem;
   text-align: center;
   text-transform: uppercase;
@@ -129,7 +156,7 @@ const ArrowButton = styled.button`
   width: 4rem;
   height: 3rem;
   border: 1px solid var(--pf-line);
-  border-radius: 0.35rem;
+  border-radius: 0.7rem;
   background: #101010;
   color: var(--pf-white);
   font-size: 2rem;
@@ -140,8 +167,9 @@ const ArrowButton = styled.button`
 const Value = styled.div`
   min-width: 5rem;
   color: var(--pf-white);
-  font-family: "Arial Black", Impact, sans-serif;
+  font-family: var(--pf-font);
   font-size: 3.5rem;
+  font-weight: 900;
   text-align: center;
 `;
 
@@ -155,8 +183,8 @@ const CloseButton = styled.button`
   width: 100%;
   height: 3.25rem;
   border: 0;
-  border-radius: 0.35rem;
-  background: var(--pf-green);
+  border-radius: 0.7rem;
+  background: var(--pf-accent);
   color: #111;
   font-weight: 900;
 `;

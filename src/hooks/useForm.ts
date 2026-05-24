@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, SubmitEventHandler, useEffect, useState } from "react";
 import { useSoundContext } from "../context/sound/useSoundContext";
 import { LocalStorageKey } from "../enums";
 import { InputTypes, TimerFormString } from "../interfaces";
@@ -105,7 +105,7 @@ export const useForm = (): FormProviderProps => {
     setActivePresetState(Math.min(PRESETS_QUANTITY - 1, Math.max(0, index)));
   };
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     await loadSounds();
     prepareSound.play();

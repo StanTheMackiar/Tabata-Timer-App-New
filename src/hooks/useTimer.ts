@@ -11,7 +11,7 @@ import { useStopButton } from "./useStopButton";
 const secondsFromTimer = (minutes: number, seconds: number) =>
   minutes * 60 + seconds;
 
-export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
+export const useTimer = ({ form }: useTimerProps) => {
   const {
     finalBeepSound,
     oneSound,
@@ -27,8 +27,6 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
   const {
     changeMinutes,
     changeSeconds,
-    changeCycles,
-    changeTabatas,
     runTimer,
     stopAllTimers,
     state,
@@ -44,37 +42,26 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
   const pauseRemainingRef = useRef(0);
   const beepedRef = useRef<Set<number>>(new Set());
 
-  const bgColor = timers.getBGColor(currentTimerName);
-  const currentTimerState = timers.getCurrentTimerState(
-    state.timerState,
-    currentTimerName,
-  );
-  const initialMinutes = timers.getTimerValue(
-    "minutes",
-    form,
-    currentTimerName,
-  );
-  const initialSeconds = timers.getTimerValue(
-    "seconds",
-    form,
-    currentTimerName,
-  );
+  const bgColor = timers.getBGColor(state.activeTimer);
+
   const { minutes, seconds, cycles, tabatas } = state.timer;
 
   useEffect(function initializePrepareTimer() {
-    if (currentTimerName !== TimerType.PREPARE) return;
+    if (!!state.activeTimer) return;
 
-    changeMinutes(form.prepareM);
-    changeSeconds(form.prepareS);
-    changeCycles(form.initialCycles);
-    changeTabatas(form.initialTabatas);
-    runTimer(TimerType.PREPARE);
+    runTimer({
+      timerName: TimerType.PREPARE,
+      minutes: form.prepareM,
+      seconds: form.prepareS,
+      cycles: form.initialCycles,
+      tabatas: form.initialTabatas,
+    });
     setPause(false);
   }, []);
 
   useEffect(
     function armCurrentTimerEndTime() {
-      if (!currentTimerState) {
+      if (!state.activeTimer) {
         activatedRef.current = false;
         return;
       }
@@ -89,12 +76,12 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
         activatedRef.current = true;
       }
     },
-    [currentTimerState],
+    [state.activeTimer],
   );
 
   useEffect(
     function syncPauseStateWithTimerClock() {
-      if (!currentTimerState || !endAtRef.current) return;
+      if (!state.activeTimer || !endAtRef.current) return;
 
       if (state.isPaused && !pausedRef.current) {
         pauseRemainingRef.current = getRemainingSeconds();
@@ -109,7 +96,7 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
         pausedRef.current = false;
       }
     },
-    [currentTimerState, state.isPaused],
+    [state.activeTimer, state.isPaused],
   );
 
   const getRemainingSeconds = () => {
@@ -142,19 +129,25 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
     completedRef.current = true;
     stopAllTimers();
 
-    if (currentTimerName === TimerType.PREPARE) {
-      changeMinutes(form.workM);
-      changeSeconds(form.workS);
+    if (state.activeTimer === TimerType.PREPARE) {
+      console.log({ form, state });
+
       workSound.play();
-      runTimer(TimerType.WORK);
+      runTimer({
+        timerName: TimerType.WORK,
+        minutes: form.workM,
+        seconds: form.workS,
+      });
       return;
     }
 
-    if (currentTimerName === TimerType.WORK) {
-      changeMinutes(form.restM);
-      changeSeconds(form.restS);
+    if (state.activeTimer === TimerType.WORK) {
       restSound.play();
-      runTimer(TimerType.REST);
+      runTimer({
+        timerName: TimerType.REST,
+        minutes: form.restM,
+        seconds: form.restS,
+      });
       return;
     }
 
@@ -166,12 +159,14 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
       return;
     }
 
-    changeCycles(nextCycles);
-    changeTabatas(nextTabatas);
-    changeMinutes(form.workM);
-    changeSeconds(form.workS);
     workSound.play();
-    runTimer(TimerType.WORK);
+    runTimer({
+      timerName: TimerType.WORK,
+      minutes: form.workM,
+      seconds: form.workS,
+      cycles: nextCycles,
+      tabatas: nextTabatas,
+    });
   };
 
   const toggleTimerPause = () => {
@@ -194,17 +189,15 @@ export const useTimer = ({ currentTimerName, form }: useTimerProps) => {
         finishCurrentTimer();
       }
     },
-    currentTimerState && !state.isPaused ? 250 : null,
+    state.activeTimer && !state.isPaused ? 250 : null,
   );
 
   return {
     bgColor,
-    currentTimerState,
+    activeTimer: state.activeTimer,
     minutes,
     togglePause: toggleTimerPause,
     seconds,
     isPaused: state.isPaused,
-    initialMinutes,
-    initialSeconds,
   };
 };

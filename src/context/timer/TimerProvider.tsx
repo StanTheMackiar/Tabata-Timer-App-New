@@ -1,21 +1,19 @@
 import { FC, PropsWithChildren } from "react";
-import { TimerType } from "../../enums";
 import { TimerActionTypes, useTimerReducer } from "./timerReducer";
-import { TimerContext } from "./useTimerContex";
+import { RunTimerParams, TimerContext } from "./useTimerContex";
 
 export const TimerProvider: FC<PropsWithChildren> = ({ children }) => {
   const { dispatch, state } = useTimerReducer();
 
-  const runTimer = (timerName: TimerType) => {
-    dispatch({ type: TimerActionTypes.RUN_TIMER, payload: { timerName } });
-  };
-
-  const stopTimer = (timerName: TimerType) => {
-    dispatch({ type: TimerActionTypes.STOP_TIMER, payload: { timerName } });
+  const runTimer = (params: RunTimerParams) => {
+    dispatch({
+      type: TimerActionTypes.RUN_TIMER,
+      payload: params,
+    });
   };
 
   const stopAllTimers = () => {
-    dispatch({ type: TimerActionTypes.STOP_ALL_TIMERS });
+    dispatch({ type: TimerActionTypes.STOP_SESSION });
   };
 
   const changeSeconds = (value: number) =>
@@ -47,7 +45,6 @@ export const TimerProvider: FC<PropsWithChildren> = ({ children }) => {
         runTimer,
         setPause,
         stopAllTimers,
-        stopTimer,
         togglePause,
       }}
     >

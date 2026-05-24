@@ -31,20 +31,32 @@ const GlobalStyle = createGlobalStyle`
   :root {
     --pf-bg: ${COLORS.bg};
     --pf-panel: ${COLORS.panel};
+    --pf-panel-alt: ${COLORS.panelAlt};
     --pf-line: ${COLORS.line};
     --pf-white: ${COLORS.white};
     --pf-muted: ${COLORS.muted};
-    --pf-green: ${COLORS.accent};
+    --pf-accent: ${COLORS.accent};
+    --pf-dark-text: ${COLORS.textDark};
     --pf-prepare: ${COLORS.prepare};
     --pf-work: ${COLORS.work};
     --pf-rest: ${COLORS.rest};
+    --pf-font: Inter, Arial, Helvetica, sans-serif;
+  }
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    min-width: 320px;
+    overflow: hidden;
   }
   body {
     margin: 0;
     background-color: var(--pf-bg);
     color: var(--pf-white);
-    font-family: Inter, Arial, Helvetica, sans-serif;
-    min-width: 320px;
+    font-family: var(--pf-font);
+    min-height: 100dvh;
+    -webkit-text-size-adjust: 100%;
   }
   button,
   input {
