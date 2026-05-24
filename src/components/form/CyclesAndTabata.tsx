@@ -57,17 +57,29 @@ const StatButton = styled.button`
   color: var(--pf-white);
   display: grid;
   place-items: center;
+  gap: 8px;
   padding: 0.5rem;
 
   strong {
-    font-size: clamp(48px, 64px, 86px);
+    font-size: 36px;
     line-height: 0.9;
     font-weight: 800;
   }
 
   span {
     color: var(--pf-muted);
-    font-size: clamp(1rem, 2rem, 3rem);
+    font-size: 1rem;
     font-weight: 800;
+  }
+
+  @media (min-width: ${BREAKPOINTS.desktop}px) {
+    strong {
+      font-size: 48px;
+    }
+
+    span {
+      color: var(--pf-muted);
+      font-size: 2rem;
+    }
   }
 `;

@@ -66,7 +66,7 @@ const TimerButton = styled.button<{ bgColor: string }>`
   font-size: 24px;
 
   @media (min-width: ${BREAKPOINTS.desktop}px) {
-    font-size: clamp(48px, 3rem, 64px);
+    font-size: clamp(36px, 2.5rem, 64px);
   }
 
   span {
