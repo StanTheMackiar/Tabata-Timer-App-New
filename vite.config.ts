@@ -16,7 +16,7 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
       manifest: {
-        name: "Tabata PowerFit",
+        name: "Tabata Timer",
         short_name: "Tabata",
         description: "Timer for your Tabata trains!",
         background_color: "#2B2B2B",
