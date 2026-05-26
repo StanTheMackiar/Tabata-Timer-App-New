@@ -96,7 +96,7 @@ export const useTimer = ({ form }: useTimerProps) => {
   const playCountdown = (remainingSeconds: number) => {
     if (
       minutes !== 0 ||
-      ![3, 2, 1].includes(remainingSeconds) ||
+      ![3, 2, 1, 0].includes(remainingSeconds) ||
       beepedRef.current.has(remainingSeconds)
     ) {
       return;
