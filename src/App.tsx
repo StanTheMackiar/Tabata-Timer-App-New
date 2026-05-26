@@ -64,6 +64,8 @@ const GlobalStyle = createGlobalStyle`
   }
   button {
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
   p {
     color: var(--pf-muted);
