@@ -12,17 +12,8 @@ const secondsFromTimer = (minutes: number, seconds: number) =>
   minutes * 60 + seconds;
 
 export const useTimer = ({ form }: useTimerProps) => {
-  const {
-    finalBeepSound,
-    oneSound,
-    startBeepSound,
-    threeSound,
-    twoSound,
-    workSound,
-    restSound,
-    pauseSound,
-    resumeSound,
-  } = useSoundContext();
+  const { finalBeepSound, workSound, restSound, pauseSound, resumeSound } =
+    useSoundContext();
 
   const {
     changeMinutes,
@@ -105,18 +96,14 @@ export const useTimer = ({ form }: useTimerProps) => {
   const playCountdown = (remainingSeconds: number) => {
     if (
       minutes !== 0 ||
-      ![3, 2, 1, 0].includes(remainingSeconds) ||
+      ![3, 2, 1].includes(remainingSeconds) ||
       beepedRef.current.has(remainingSeconds)
     ) {
       return;
     }
 
     beepedRef.current.add(remainingSeconds);
-    if (remainingSeconds === 3) threeSound.play();
-    if (remainingSeconds === 2) twoSound.play();
-    if (remainingSeconds === 1) oneSound.play();
     finalBeepSound.play();
-    if (remainingSeconds === 0) startBeepSound.play();
   };
 
   const finishCurrentTimer = () => {
@@ -147,7 +134,7 @@ export const useTimer = ({ form }: useTimerProps) => {
     const nextTabatas = cycles > 1 ? tabatas : tabatas - 1;
 
     if (nextTabatas < 1) {
-      stopButton.stopTimer();
+      stopButton.stopTimer({ complete: true });
       return;
     }
 

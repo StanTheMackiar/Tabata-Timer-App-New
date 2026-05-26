@@ -3,17 +3,13 @@ import { createContext, useContext } from "react";
 
 interface ContextProps {
   finalBeepSound: Howl;
-  oneSound: Howl;
   pauseSound: Howl;
   prepareSound: Howl;
   resumeSound: Howl;
   restSound: Howl;
-  startBeepSound: Howl;
-  stopBeepSound: Howl;
   stopSound: Howl;
-  threeSound: Howl;
-  twoSound: Howl;
   workSound: Howl;
+  completeSound: Howl;
   isReady: boolean;
   loadSounds: () => Promise<void>;
   allSounds: Howl[];

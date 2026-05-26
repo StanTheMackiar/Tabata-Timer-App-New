@@ -1,19 +1,19 @@
 import { Howler } from "howler";
 import { useSoundContext } from "../context/sound/useSoundContext";
 import { useTimerContext } from "../context/timer/useTimerContex";
-import { AppRoute } from "../routes/routes.enum";
 import { useAppNavigate } from "../routes/navigation.helper";
+import { AppRoute } from "../routes/routes.enum";
 
 export const useStopButton = () => {
-  const { stopBeepSound, stopSound } = useSoundContext();
+  const { stopSound, completeSound } = useSoundContext();
   const { stopAllTimers } = useTimerContext();
 
   const navigate = useAppNavigate();
 
-  const stopTimer = () => {
+  const stopTimer = ({ complete = false } = {}) => {
     Howler.stop();
-    stopBeepSound.play();
-    stopSound.play();
+    if (complete) completeSound.play();
+    else stopSound.play();
     stopAllTimers();
     navigate(AppRoute.HOME);
   };

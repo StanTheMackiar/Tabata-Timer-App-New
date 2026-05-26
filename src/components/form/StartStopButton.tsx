@@ -16,7 +16,7 @@ export const StartStopButton: FC<Props> = ({ action = "start" }) => {
   return (
     <Button
       action={action}
-      onClick={action === "stop" ? stopButton.stopTimer : undefined}
+      onClick={action === "stop" ? () => stopButton.stopTimer() : undefined}
       type={action === "start" ? "submit" : "button"}
     >
       {action === "start" ? "Start!" : "Stop"}
