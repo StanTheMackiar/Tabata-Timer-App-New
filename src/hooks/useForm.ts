@@ -64,7 +64,7 @@ export const useForm = (): FormProviderProps => {
     useState<TimerFormString[]>(createInitialPresets);
   const [activePreset, setActivePresetState] = useState(0);
   const form = presets[activePreset] || initialForm;
-  const { prepareSound, loadSounds } = useSoundContext();
+  const { play, loadSounds } = useSoundContext();
 
   const navigate = useAppNavigate();
 
@@ -121,7 +121,7 @@ export const useForm = (): FormProviderProps => {
   const onSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     await loadSounds();
-    prepareSound.play();
+    play("prepare");
 
     navigate(AppRoute.START, { preset: activePreset });
   };

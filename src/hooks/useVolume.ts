@@ -1,20 +1,17 @@
-import { Howler } from "howler";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useSoundContext } from "../context/sound/useSoundContext";
 import { LocalStorageKey } from "../enums";
 import { getLocalStorageItem, setLocalStorageItem } from "../utils/local-storage";
 
 export const useVolume = () => {
-  const { coachSounds } = useSoundContext();
+  const { setCoachMuted, setVolume: setEngineVolume } = useSoundContext();
 
   const [volume, setVolume] = useState(0.5);
   const [isCoachMuted, setIsCoachMuted] = useState(false);
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const nextVolume = Number(e.target.value);
-    setVolume(nextVolume);
-    Howler.volume(nextVolume);
-  };
+  // El motor lo actualiza el efecto syncEngineVolume; aquí basta con el estado.
+  const onChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setVolume(Number(e.target.value));
 
   const changeIsCoachMuted = (state: boolean) => {
     setIsCoachMuted(state);
@@ -31,17 +28,17 @@ export const useVolume = () => {
     );
   }, []);
 
-  useEffect(function syncHowlerVolume() {
-    Howler.volume(volume);
-  }, [volume]);
+  useEffect(function syncEngineVolume() {
+    setEngineVolume(volume);
+  }, [setEngineVolume, volume]);
 
   useEffect(function persistVolumeInLocalStorage() {
     setLocalStorageItem(LocalStorageKey.VOLUME, volume);
   }, [volume]);
 
   useEffect(function syncCoachMutedStateToSounds() {
-    coachSounds.forEach((sound) => sound.mute(isCoachMuted));
-  }, [coachSounds, isCoachMuted]);
+    setCoachMuted(isCoachMuted);
+  }, [isCoachMuted, setCoachMuted]);
 
   return {
     isCoachMuted,
