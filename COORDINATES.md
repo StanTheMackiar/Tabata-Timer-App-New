@@ -1,211 +1,172 @@
 # Coordenadas del código — Tabata Timer
 
-Mapa `archivo:línea` de cada símbolo del proyecto. Generado el 2026-09-10 sobre el commit `e3ec15f`.
+Mapa `archivo:línea` de cada símbolo del proyecto. Regenerado tras el rediseño Nocturne.
 Índice de alto nivel y convenciones: ver [AGENTS.md](AGENTS.md).
 
-## Entrada y arranque
+## Entrada, rutas y estilos globales
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| Montaje de React | `src/main.tsx:5` | `createRoot` sobre `#root`, sin `StrictMode` (comentado) |
-| `App` | `src/App.tsx:10` | Árbol de providers: `Router > SoundProvider > FormProvider > TimerProvider > Navigation` |
-| `GlobalStyle` | `src/App.tsx:25` | `createGlobalStyle`; define las variables CSS `--pf-*` desde `COLORS` |
-| HTML raíz | `index.html:1` | Meta PWA, fuente Inter vía `@import`, `<div id="root">` |
-
-## Rutas
-
-| Símbolo | Coordenada | Notas |
-| --- | --- | --- |
-| `AppRoute` | `src/routes/routes.enum.ts:1` | `HOME = "/"`, `START = "/start"` |
-| `Navigation` | `src/routes/Navigation.tsx:5` | `/` → `HomePage`, `/start` → `StartPage`, `/*` → redirect a `HOME` |
-| `RouteParams` | `src/routes/navigation.helper.ts:4` | `Record<string, number \| string>` |
-| `buildRoute` | `src/routes/navigation.helper.ts:6` | Serializa params a query string |
-| `useAppNavigate` | `src/routes/navigation.helper.ts:17` | Wrapper de `useNavigate` tipado por `AppRoute` |
+| Montaje de React | `src/main.tsx:5` | `createRoot` sobre `#root`, sin `StrictMode` |
+| `App` | `src/App.tsx:10` | Providers: `Router > SoundProvider > PresetsProvider > TimerProvider > Navigation` |
+| `GlobalStyle` | `src/App.tsx:25` | Tokens `--pf-*`, área segura y los cinco keyframes `pf-*` |
+| `AppRoute` | `src/routes/routes.enum.ts:1` | `HOME = "/"`, `RUN = "/run"`, `SUMMARY = "/summary"` |
+| `Navigation` | `src/routes/Navigation.tsx:5` | Tres rutas más redirección comodín a `HOME` |
+| `buildRoute` / `useAppNavigate` | `src/routes/navigation.helper.ts:6` / `:17` | |
 
 ## Páginas
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `HomePage` | `src/pages/HomePage.tsx:8` | `Layout > TotalTime + Form` |
-| `HomeContent` (styled) | `src/pages/HomePage.tsx:19` | Grid a partir de `BREAKPOINTS.desktop` |
-| `StartPage` | `src/pages/StartPage.tsx:9` | `Timer` (sólo si `isLoaded`) + `CyclesAndTabata` + `StartStopButton action="stop"` |
-| `RunContent` (styled) | `src/pages/StartPage.tsx:29` | |
-| Barrel de páginas | `src/pages/index.ts:4` | |
+| `HomePage` | `src/pages/HomePage.tsx:18` | Dos columnas en escritorio; abre la hoja del editor |
+| `RunPage` | `src/pages/RunPage.tsx:11` | Anillo + panel; el cartel de pausa va como `overlay` del Layout |
+| ↳ guarda de acceso directo | `src/pages/RunPage.tsx:22` | Sale a `HOME` si no hay sesión ni resumen |
+| `SummaryPage` | `src/pages/SummaryPage.tsx:17` | Pantalla nueva; a pantalla completa, sin cabecera |
 
-## Contextos (estado global)
+## Estado global
 
-### Sonido
-
-| Símbolo | Coordenada | Notas |
-| --- | --- | --- |
-| `SoundProvider` | `src/context/sound/SoundProvider.tsx:21` | Instancia 8 `Howl` en `useMemo` |
-| Mapa de sonidos | `src/context/sound/SoundProvider.tsx:22` | `prepare, stop, finalBeep, pause, work, complete, rest, resume` |
-| `coachSounds` | `src/context/sound/SoundProvider.tsx:38` | Subconjunto silenciable por el usuario |
-| `loadSounds` | `src/context/sound/SoundProvider.tsx:49` | Precarga con `Promise.all`; resuelve también en `loaderror` |
-| Efecto de precarga | `src/context/sound/SoundProvider.tsx:67` | `unload()` en cleanup |
-| `ContextProps` (sonido) | `src/context/sound/useSoundContext.tsx:4` | |
-| `SoundContext` | `src/context/sound/useSoundContext.tsx:19` | |
-| `useSoundContext` | `src/context/sound/useSoundContext.tsx:21` | |
-
-### Formulario
+### Presets
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `FormProvider` | `src/context/form/FormProvider.tsx:5` | Delega toda la lógica en `useForm` |
-| `FormContext` | `src/context/form/useFormContext.ts:4` | |
-| `useFormContext` | `src/context/form/useFormContext.ts:8` | |
+| `PresetsProvider` | `src/context/presets/PresetsProvider.tsx:5` | |
+| `PresetsContext` / `usePresetsContext` | `src/context/presets/usePresetsContext.ts:6` / `:8` | El tipo del contexto sale de `ReturnType<typeof usePresets>` |
+| `usePresets` | `src/hooks/usePresets.ts:18` | **Núcleo de los presets** |
+| ↳ hidratación y migración | `src/hooks/usePresets.ts:25` | |
+| ↳ `stepField` / `setField` / `renameActive` | `src/hooks/usePresets.ts:56` / `:60` / `:63` | Relativo, absoluto y nombre |
+| `EditableField` | `src/hooks/usePresets.ts:16` | |
 
 ### Temporizador
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `TimerProvider` | `src/context/timer/TimerProvider.tsx:5` | Envuelve el reducer en acciones nombradas |
-| `runTimer` | `src/context/timer/TimerProvider.tsx:8` | |
-| `stopAllTimers` | `src/context/timer/TimerProvider.tsx:15` | |
-| `TimerActionTypes` | `src/context/timer/timerReducer.ts:5` | 8 acciones |
-| `TimerState` | `src/context/timer/timerReducer.ts:16` | `activeTimer`, `timer{minutes,seconds,tabatas,cycles}`, `isPaused` |
-| `TimerActionType` (unión) | `src/context/timer/timerReducer.ts:27` | |
-| `TIMER_INITIAL_STATE` | `src/context/timer/timerReducer.ts:40` | |
-| `timerReducer` | `src/context/timer/timerReducer.ts:51` | `RUN_TIMER` en :56, `STOP_SESSION` en :70 |
-| `useTimerReducer` | `src/context/timer/timerReducer.ts:127` | |
-| `RunTimerParams` | `src/context/timer/useTimerContex.ts:5` | |
-| `RunTimerFun` | `src/context/timer/useTimerContex.ts:12` | |
-| `TimerContext` | `src/context/timer/useTimerContex.ts:27` | |
-| `useTimerContext` | `src/context/timer/useTimerContex.ts:29` | Ojo: el archivo se llama `useTimerContex.ts` (sin la `t` final) |
+| `TimerProvider` | `src/context/timer/TimerProvider.tsx:10` | Envuelve el reducer en acciones nombradas |
+| `TimerContext` / `useTimerContext` | `src/context/timer/useTimerContext.ts:17` / `:19` | |
+| `TimerSession` | `src/context/timer/timerReducer.ts:6` | `cycle` y `tabata` son 1-based, como se muestran |
+| `SessionSummary` | `src/context/timer/timerReducer.ts:18` | Alimenta la pantalla de resumen |
+| `TimerState` | `src/context/timer/timerReducer.ts:25` | `preset`, `session`, `summary`, `isPaused` |
+| `TimerActionTypes` | `src/context/timer/timerReducer.ts:32` | 7 acciones |
+| `timerReducer` | `src/context/timer/timerReducer.ts:66` | `START_SESSION` en :68, `COMPLETE_SESSION` en :113 |
+| `useTimerReducer` | `src/context/timer/timerReducer.ts:142` | |
+
+### Sonido
+
+| Símbolo | Coordenada | Notas |
+| --- | --- | --- |
+| `SoundProvider` | `src/context/sound/SoundProvider.tsx:5` | Elige el motor una sola vez |
+| `SoundContext` / `useSoundContext` | `src/context/sound/useSoundContext.tsx:13` / `:15` | |
+| `SOUND_SOURCES` | `src/context/sound/sounds.ts:16` | Mapa id → URL con hash de Vite |
+| `COACH_SOUND_IDS` | `src/context/sound/sounds.ts:30` | Voz silenciable aparte |
+| `createAudioEngine` | `src/context/sound/engines/index.ts:67` | Nativo si Capacitor; web en caso contrario |
+| `createNativeEngineWithWebFallback` | `src/context/sound/engines/index.ts:16` | Rehace volumen y mute al degradar |
+| `createWebAudioEngine` | `src/context/sound/engines/webAudioEngine.ts:14` | Howler |
+| `createNativeAudioEngine` | `src/context/sound/engines/nativeAudioEngine.ts:25` | |
+| `toNativeAssetPath` | `src/context/sound/engines/nativeAudioEngine.ts:15` | `/assets/x.mp3` → `public/assets/x.mp3` |
+| `AudioEngine` / `SoundId` | `src/interfaces/audio/audio-engine.interface.ts:18` / `:1` | |
 
 ## Hooks
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `initialForm` | `src/hooks/useForm.ts:14` | Preset por defecto: prep 00:05, work 00:20, rest 00:10, 4 ciclos, 3 tabatas |
-| `PRESETS_QUANTITY` | `src/hooks/useForm.ts:25` | `4` — usado por `Form.tsx:39` y `setActivePreset` |
-| `createInitialPresets` | `src/hooks/useForm.ts:27` | T1–T4 con `workS` 20/30/40/50 |
-| `getCircularValue` | `src/hooks/useForm.ts:34` | Incremento circular; max 59 (min/seg) o 99, min 0 (minutos) o 1 |
-| `readPresets` | `src/hooks/useForm.ts:48` | Fusiona lo guardado con los presets base |
-| `useForm` | `src/hooks/useForm.ts:62` | **Núcleo del formulario** |
-| ↳ hidratación desde localStorage | `src/hooks/useForm.ts:71` | |
-| ↳ persistencia de presets | `src/hooks/useForm.ts:79` | |
-| ↳ `onChange` / `updateField` / `stepField` | `src/hooks/useForm.ts:93` / `:101` / `:109` | |
-| ↳ `onSubmit` | `src/hooks/useForm.ts:121` | Carga sonidos, reproduce `prepare`, navega a `/start?preset=N` |
-| `useTimer` | `src/hooks/useTimer.ts:14` | **Motor del cronómetro** |
-| ↳ `secondsFromTimer` | `src/hooks/useTimer.ts:11` | |
-| ↳ refs de control | `src/hooks/useTimer.ts:28` | `endAtRef`, `completedRef`, `pausedRef`, `pauseRemainingRef`, `beepedRef` |
-| ↳ arranque en PREPARE | `src/hooks/useTimer.ts:38` | |
-| ↳ `armCurrentTimerEndTime` | `src/hooks/useTimer.ts:51` | Fija el instante de fin con Luxon (reloj absoluto, no acumulativo) |
-| ↳ `syncPauseStateWithTimerClock` | `src/hooks/useTimer.ts:68` | Recalcula `endAt` al reanudar |
-| ↳ `getRemainingSeconds` | `src/hooks/useTimer.ts:88` | |
-| ↳ `playCountdown` | `src/hooks/useTimer.ts:96` | Pita en 3, 2, 1, 0 y sólo si `minutes === 0` |
-| ↳ `finishCurrentTimer` | `src/hooks/useTimer.ts:109` | Máquina de estados PREPARE→WORK→REST→WORK…; fin en :136 |
-| ↳ `toggleTimerPause` | `src/hooks/useTimer.ts:151` | |
-| ↳ tick del intervalo | `src/hooks/useTimer.ts:160` | 250 ms mientras haya timer activo y no esté pausado |
-| `useInterval` | `src/hooks/useInterval.ts:3` | Patrón clásico de Dan Abramov con `savedCallback` |
-| `useInitialValues` | `src/hooks/useInitialValues.ts:15` | Lee `?preset=` o `ACTIVE_PRESET` y devuelve `TimerFormNumber` |
-| ↳ `InitialValuesReturn` | `src/hooks/useInitialValues.ts:8` | |
-| ↳ `getPresetFromStorage` | `src/hooks/useInitialValues.ts:47` | |
-| `useStopButton` | `src/hooks/useStopButton.ts:7` | `Howler.stop()`, sonido stop/complete, reset y vuelta a `HOME` |
-| `useTotalTime` | `src/hooks/useTotalTime.ts:5` | `prepare + (work + rest) * cycles * tabatas` |
-| `useVolume` | `src/hooks/useVolume.ts:7` | Volumen global Howler + mute de voz del coach, persistidos |
-| Barrel de hooks | `src/hooks/index.ts:3` | |
+| `useSession` | `src/hooks/useSession.ts:29` | **Motor de la sesión** |
+| ↳ refs de control | `src/hooks/useSession.ts:47` | `endAt`, `completed`, `paused`, `pauseRemaining`, `beeped` |
+| ↳ `armPhaseEndTime` | `src/hooks/useSession.ts:55` | Instante de fin absoluto con Luxon |
+| ↳ `syncPauseWithClock` | `src/hooks/useSession.ts:73` | Reconstruye `endAt` al reanudar |
+| ↳ `playCountdown` | `src/hooks/useSession.ts:104` | Pita en 3-2-1-0 si la fase dura ≤ 60s |
+| ↳ `finishPhase` | `src/hooks/useSession.ts:118` | Avanza o completa la sesión |
+| ↳ tick | `src/hooks/useSession.ts:144` | 250 ms mientras corra y no esté pausada |
+| `SessionView` | `src/hooks/useSession.ts:178` | Lo que consume la pantalla de sesión |
+| `useSessionControls` | `src/hooks/useSessionControls.ts:7` | `start`, `stop`, `dismissSummary` |
+| `useVolume` | `src/hooks/useVolume.ts:6` | Volumen global y mute del coach, persistidos |
+| `useInterval` | `src/hooks/useInterval.ts:3` | |
 
 ## Componentes
 
-### Formulario
+### Armazón
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `timerEditors` | `src/components/form/Form.tsx:20` | Config declarativa de los 3 botones de tiempo |
-| `Form` | `src/components/form/Form.tsx:31` | Barra de presets (:38), grid de timers (:51), diálogo (:81) |
-| `FormEditorDialog` | `src/components/form/FormEditorDialog.tsx:22` | Modal con selector de flechas |
-| ↳ `Props` | `src/components/form/FormEditorDialog.tsx:17` | |
-| `CyclesAndTabata` | `src/components/form/CyclesAndTabata.tsx:13` | Reutilizado en Home (editable) y Start (sólo lectura) |
-| ↳ `Props` | `src/components/form/CyclesAndTabata.tsx:6` | |
-| ↳ `StatsRow` / `StatButton` | `src/components/form/CyclesAndTabata.tsx:42` / `:52` | |
-| `StartStopButton` | `src/components/form/StartStopButton.tsx:13` | |
-| ↳ `ButtonAction` | `src/components/form/StartStopButton.tsx:11` | `"start" \| "stop"` |
-| ↳ `Button` (styled) | `src/components/form/StartStopButton.tsx:27` | |
-| Barrel de form | `src/components/form/index.ts:1` | |
+| `Layout` | `src/components/layouts/Layout.tsx:20` | Resplandor + cabecera + popover + contenido + `overlay` |
+| ↳ `AppContainer` | `src/components/layouts/Layout.tsx:69` | Área segura en los cuatro lados |
+| `AppHeader` | `src/components/ui/AppHeader.tsx:17` | Marca, píldora de tiempo, coach y volumen |
+| `VolumePopover` | `src/components/ui/VolumePopover.tsx:14` | Sustituye a la barra fija |
+| `PhaseGlow` | `src/components/ui/PhaseGlow.tsx:12` | Resplandor difuso del fondo |
+| `IconButton` | `src/components/ui/IconButton.tsx:4` | |
+| `PrimaryAction` / `GhostAction` | `src/components/ui/ActionButton.tsx:15` / `:40` | |
 
-### UI
+### Home
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `Timer` | `src/components/ui/Timer.tsx:13` | Consume `useTimer`; formatea `MM:SS` en :17 |
-| ↳ `Props` (`{ form: TimerFormNumber }`) | `src/components/ui/Timer.tsx:9` | Reutilizado como `useTimerProps` en `useTimer.ts:3` |
-| ↳ `TimerSection` (styled) | `src/components/ui/Timer.tsx:32` | Fondo según `bgColor` del tipo de timer |
-| `PauseTimer` | `src/components/ui/PauseTimer.tsx:10` | |
-| `TotalTime` | `src/components/ui/TotalTime.tsx:5` | |
-| `VolumeControl` | `src/components/ui/VolumeControl.tsx:8` | Slider + toggle de voz (`voiceStyle` en :46) |
-| `Header` | `src/components/ui/Header.tsx:3` | |
-| Barrel de UI | `src/components/ui/index.ts:4` | |
+| `TotalSession` | `src/components/home/TotalSession.tsx:11` | Total + desglose |
+| `PresetChips` | `src/components/home/PresetChips.tsx:14` | Presets con nombre + Rename |
+| `IntervalList` | `src/components/home/IntervalList.tsx:14` | Las tres filas de intervalo |
+| `CounterStepper` | `src/components/home/CounterStepper.tsx:15` | ± de ciclos y tabatas, objetivos de 44px |
 
-### Layout y estilos
+### Sesión
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `Layout` | `src/components/layouts/Layout.tsx:6` | |
-| ↳ `AppContainer` / `Content` | `src/components/layouts/Layout.tsx:16` / `:33` | |
-| `StyledForm` | `src/components/form/styles/FormStyles.ts:4` | Grid 2 columnas en desktop |
-| `PresetBar` | `src/components/form/styles/FormStyles.ts:18` | |
-| `PresetButton` | `src/components/form/styles/FormStyles.ts:29` | Prop `active` |
-| `TimersGrid` | `src/components/form/styles/FormStyles.ts:42` | |
-| `TimerButton` | `src/components/form/styles/FormStyles.ts:54` | Prop `bgColor` |
-| `StatsRow` / `StatButton` | `src/components/form/styles/FormStyles.ts:84` / `:94` | |
-| `Overlay` / `Dialog` / `DialogTitle` | `src/components/form/styles/FormStyles.ts:123` / `:133` / `:142` | |
-| `PickerRow` / `Picker` / `ArrowButton` | `src/components/form/styles/FormStyles.ts:149` / `:157` / `:163` | |
-| `Value` / `Colon` / `CloseButton` | `src/components/form/styles/FormStyles.ts:175` / `:184` / `:190` | |
-| Bloque de exports | `src/components/form/styles/FormStyles.ts:200` | |
+| `PhaseRing` | `src/components/run/PhaseRing.tsx:23` | Anillo de fase + arco de sesión |
+| ↳ radios | `src/components/run/PhaseRing.tsx:14` | 92 (fase) y 79 (sesión) sobre un viewBox de 200 |
+| `CyclePips` | `src/components/run/CyclePips.tsx:11` | |
+| `RunPanel` | `src/components/run/RunPanel.tsx:12` | Tarjetas, barra de sesión y controles |
+| `PausedOverlay` | `src/components/run/PausedOverlay.tsx:14` | Desenfoque; el reloj queda legible detrás |
 
-## Tipos e interfaces
+### Editor
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `TimerFormString` | `src/interfaces/timer.interface.ts:1` | Forma del formulario (strings con padding `"05"`) |
-| `TimerFormNumber` | `src/interfaces/timer.interface.ts:12` | Forma de ejecución; usa `initialCycles` / `initialTabatas` |
-| `InputTypes` | `src/interfaces/timer.interface.ts:23` | |
-| `ITimers` | `src/interfaces/timer.interface.ts:25` | Sin usos actuales |
-| `FormProviderProps` | `src/interfaces/providers/form-provider.interface.ts:4` | Contrato del `FormContext` |
-| `TimerField` | `src/interfaces/forms/form.interface.ts:4` | |
-| `CountField` | `src/interfaces/forms/form.interface.ts:9` | |
-| `FormEditor` | `src/interfaces/forms/form.interface.ts:11` | Unión discriminada `timer \| count` |
-| `FormTimerEditor` | `src/interfaces/forms/form.interface.ts:20` | |
-| `declare module "*.mp3"` | `types/asset.d.ts:1` | |
+| `EditorSheet` | `src/components/editor/EditorSheet.tsx:21` | Hoja inferior: duración o renombrado |
+| `QUICK_PICKS` | `src/components/editor/EditorSheet.tsx:17` | 5, 10, 20, 30, 40, 50, 60 s |
+| `NAME_SUGGESTIONS` | `src/components/editor/EditorSheet.tsx:19` | |
+| `TimerPicker` | `src/components/editor/TimerPicker.tsx:13` | Una columna Min o Sec |
 
-## Enums, utilidades y constantes
+## Tipos, enums y utilidades
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `TimerType` | `src/enums/timer-type.enum.ts:1` | `prepare \| work \| rest` |
-| `LocalStorageKey` | `src/enums/local-storage-key.enum.ts:1` | `ACTIVE_PRESET`, `COACH_MUTED`, `PRESETS`, `VOLUME` |
-| `COLORS` | `src/utils/colors.ts:1` | Fuente única de color; se expone como `--pf-*` en `App.tsx:25` |
+| `TimerPreset` | `src/interfaces/timer.interface.ts:8` | Intervalos en segundos totales, con `name` |
+| `PhaseField` / `CountField` | `src/interfaces/timer.interface.ts:18` / `:21` | |
+| `EditorTarget` | `src/interfaces/timer.interface.ts:24` | Unión `timer \| name` |
+| `TimerType` | `src/enums/timer-type.enum.ts:1` | Sus valores son las claves de duración de `TimerPreset` |
+| `LocalStorageKey` | `src/enums/local-storage-key.enum.ts:1` | |
+| `COLORS` | `src/utils/colors.ts:8` | Paleta Nocturne; se publica como `--pf-*` |
 | `BREAKPOINTS` | `src/utils/breakpoints.ts:1` | `desktop: 950` |
-| `getLocalStorageItem` | `src/utils/local-storage.ts:3` | Parseo tolerante con fallback |
-| `setLocalStorageItem` | `src/utils/local-storage.ts:17` | |
-| `getBGColor` | `src/utils/timers.ts:5` | |
-| `getTimerValue` | `src/utils/timers.ts:14` | |
-| `getInputValue` | `src/utils/input.ts:5` | Sin usos actuales |
-| `validateForm` | `src/utils/validation.ts:4` | Clamp 0–99, 0–59 en segundos, mínimo `01` fuera de minutos |
-| Barrel de utils | `src/utils/index.ts:3` | Reexporta como namespaces: `validation`, `timers`, `inputs` |
+| `toShortTime` / `toClock` | `src/utils/time.ts:2` / `:8` | `1:05` y `01:05` |
+| `PRESETS_QUANTITY` | `src/utils/presets.ts:4` | |
+| `MIN_VALUE` / `MAX_VALUE` | `src/utils/presets.ts:7` / `:15` | Preparación admite 0; el resto, mínimo 1 |
+| `createInitialPresets` | `src/utils/presets.ts:23` | Classic / Thirty / Forty / Fifty |
+| `stepValue` | `src/utils/presets.ts:31` | Circular entre extremos |
+| `getTotalSeconds` | `src/utils/presets.ts:48` | |
+| `LegacyPreset` / `fromLegacy` | `src/utils/presets.ts:55` / `:69` | Migración del formato anterior al rediseño |
+| `parseStoredPresets` | `src/utils/presets.ts:87` | Normaliza lo que haya guardado |
+| `getNextPhase` | `src/utils/session.ts:15` | Máquina de estados de la sesión |
+| `getElapsedSeconds` | `src/utils/session.ts:41` | |
+| `getNextLabel` | `src/utils/session.ts:57` | |
+| `getCyclePips` | `src/utils/session.ts:71` | |
+| `getPhaseColor` / `getPhaseGlow` | `src/utils/timers.ts:29` / `:32` | |
+| `getPhaseLabel` / `getPhaseHint` | `src/utils/timers.ts:35` / `:37` | |
+| `PHASE_ORDER` | `src/utils/timers.ts:39` | Orden de las filas de la home |
+| `getLocalStorageItem` / `setLocalStorageItem` | `src/utils/local-storage.ts:3` / `:17` | |
 
 ## Configuración
 
-| Archivo | Coordenada clave | Notas |
-| --- | --- | --- |
-| `package.json:10` | scripts | `dev`, `build`, `preview`, `lint`, `lint:fix` |
-| `package.json:6` | engines | Node >= 20 |
-| `vite.config.ts:9` | `VitePWA` | `registerType: "autoUpdate"`, devOptions activadas |
-| `vite.config.ts:18` | manifest PWA | standalone, portrait, iconos 64/192/512 |
-| `tsconfig.json` | `strict: true`, `jsx: react-jsx`, `include: ["src","types"]` | |
-| `.eslintrc.cjs` | eslint + react + @typescript-eslint recomendados | |
+| Archivo | Notas |
+| --- | --- |
+| `capacitor.config.ts` | `appId`, `webDir`, `SystemBars`, live reload por `CAP_SERVER_URL` |
+| `scripts/dev-server.mjs` | Puerto y host del dev server, en un único sitio |
+| `scripts/dev-cap.mjs` | `adb reverse` + Vite en `0.0.0.0` |
+| `vite.config.ts` | Puerto fijo con `strictPort`, PWA |
+| `android/gradle.properties` | Requisito de JDK 21 documentado al final |
 
 ## Activos de sonido
 
 | Archivo | Uso |
 | --- | --- |
-| `src/assets/sounds/beeps/321beep.mp3` | Cuenta atrás 3-2-1-0 (`useTimer.ts:106`) |
-| `src/assets/sounds/beeps/pause.mp3` | Pausa (`useTimer.ts:155`) |
-| `src/assets/sounds/beeps/resume.mp3` | Reanudar (`useTimer.ts:153`) |
-| `src/assets/sounds/coach/prepare.mp3` | Al enviar el formulario (`useForm.ts:124`) |
-| `src/assets/sounds/coach/work.mp3` | Inicio de trabajo (`useTimer.ts:114`, `:141`) |
-| `src/assets/sounds/coach/rest.mp3` | Inicio de descanso (`useTimer.ts:125`) |
-| `src/assets/sounds/coach/stop.mp3` | Parada manual (`useStopButton.ts:16`) |
-| `src/assets/sounds/coach/complete.mp3` | Sesión completada (`useStopButton.ts:15`) |
+| `beeps/321beep.mp3` | Cuenta atrás (`useSession.ts:112`) |
+| `beeps/pause.mp3` / `resume.mp3` | Pausa y reanudación (`useSession.ts:152`) |
+| `coach/prepare.mp3` | Al iniciar (`useSessionControls.ts:17`) |
+| `coach/work.mp3` / `rest.mp3` | Cambio de fase (`useSession.ts:137`) |
+| `coach/stop.mp3` | Parada manual (`useSessionControls.ts:24`) |
+| `coach/complete.mp3` | Sesión completada (`useSession.ts:131`) |
