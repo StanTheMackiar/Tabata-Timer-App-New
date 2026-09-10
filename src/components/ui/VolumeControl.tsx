@@ -52,7 +52,13 @@ const voiceStyle: CSSProperties = {
 
 const Container = styled.section`
   display: flex;
-  min-height: clamp(3.25rem, 8dvh, 4rem);
+  /*
+   * Absorbe el área segura inferior (barra de gestos) para que el panel llegue
+   * al borde de la pantalla. La altura se amplía en la misma medida, de modo
+   * que la zona táctil no encoge.
+   */
+  min-height: calc(clamp(3.25rem, 8dvh, 4rem) + var(--pf-safe-bottom));
+  padding-bottom: var(--pf-safe-bottom);
   align-items: center;
   flex-direction: row;
   justify-content: center;
