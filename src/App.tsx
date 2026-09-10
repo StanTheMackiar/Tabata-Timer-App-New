@@ -41,6 +41,19 @@ const GlobalStyle = createGlobalStyle`
     --pf-work: ${COLORS.work};
     --pf-rest: ${COLORS.rest};
     --pf-font: Inter, Arial, Helvetica, sans-serif;
+
+    /*
+     * Área segura del dispositivo: notch, isla dinámica, barra de gestos.
+     *
+     * En iOS y en navegadores la fuente es env(), habilitada por el
+     * viewport-fit=cover de index.html. En Android, Capacitor fuerza env() a 0
+     * e inyecta --safe-area-inset-* con los valores reales, así que la variable
+     * manda y env() queda como respaldo.
+     */
+    --pf-safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+    --pf-safe-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+    --pf-safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+    --pf-safe-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
   }
   html,
   body,

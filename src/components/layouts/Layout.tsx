@@ -24,9 +24,20 @@ const AppContainer = styled.main`
   background-color: var(--pf-bg);
   overflow: hidden;
 
+  /*
+   * El fondo cubre la pantalla física de borde a borde, mientras que el
+   * contenido se mantiene dentro del área segura. Con box-sizing: border-box
+   * (global) el padding no desborda el 100dvh.
+   *
+   * El inset inferior no va aquí sino dentro de VolumeControl, para que su
+   * color de panel llegue hasta el borde en vez de dejar una franja del fondo
+   * bajo la barra de gestos.
+   */
+  padding: var(--pf-safe-top) var(--pf-safe-right) 0 var(--pf-safe-left);
+
   @media (min-width: ${BREAKPOINTS.desktop}px) {
-    width: 100dvw;
-    padding: 0 clamp(0.75rem, 2vw, 1.25rem);
+    padding-left: calc(var(--pf-safe-left) + clamp(0.75rem, 2vw, 1.25rem));
+    padding-right: calc(var(--pf-safe-right) + clamp(0.75rem, 2vw, 1.25rem));
   }
 `;
 

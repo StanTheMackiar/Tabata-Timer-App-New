@@ -37,6 +37,15 @@ const config: CapacitorConfig = {
     backgroundColor: "#070908",
   },
 
+  plugins: {
+    SystemBars: {
+      // "DARK" describe el fondo que hay detrás de las barras, no el color de
+      // los iconos: sobre nuestro fondo casi negro pinta iconos claros.
+      // En Android e iOS el plugin va integrado en el bridge, no hay que instalarlo.
+      style: "DARK",
+    },
+  },
+
   ...(liveReloadUrl && {
     server: {
       url: liveReloadUrl,
