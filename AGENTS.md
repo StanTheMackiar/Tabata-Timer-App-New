@@ -3,6 +3,7 @@
 Tabata Timer: PWA de temporizador por intervalos (preparación / trabajo / descanso) construida con React 19 + TypeScript + Vite, styled-components y Howler.
 
 **Mapa completo de símbolos con coordenadas `archivo:línea`: [COORDINATES.md](COORDINATES.md).** Consúltalo antes de buscar a ciegas.
+Para la visión funcional y técnica en prosa (método Tabata, stack, PWA, decisiones de diseño): [README.md](README.md).
 
 ## Comandos
 
