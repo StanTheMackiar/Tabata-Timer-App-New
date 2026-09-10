@@ -1,4 +1,5 @@
 export enum AppRoute {
   HOME = "/",
-  START = "/start",
+  RUN = "/run",
+  SUMMARY = "/summary",
 }

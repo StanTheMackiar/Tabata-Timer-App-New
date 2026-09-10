@@ -1,29 +1,26 @@
-export interface TimerFormString {
-  prepareM: string;
-  prepareS: string;
-  restM: string;
-  restS: string;
-  workM: string;
-  workS: string;
-  cycles: string;
-  tabatas: string;
-}
+import { TimerType } from "../enums";
 
-export interface TimerFormNumber {
-  prepareM: number;
-  prepareS: number;
-  restM: number;
-  restS: number;
-  workM: number;
-  workS: number;
-  initialCycles: number;
-  initialTabatas: number;
-}
-
-export type InputTypes = "minutes" | "seconds" | "cycles" | "tabatas";
-
-export interface ITimers {
+/**
+ * Un preset guardado. Los tres intervalos se almacenan en segundos totales
+ * (no en minutos + segundos por separado), que es lo que permite valores como
+ * 01:00 sin casos especiales y simplifica los cálculos de sesión.
+ */
+export interface TimerPreset {
+  name: string;
   prepare: number;
   work: number;
   rest: number;
+  cycles: number;
+  tabatas: number;
 }
+
+/** Campos de `TimerPreset` que representan una duración editable. */
+export type PhaseField = TimerType;
+
+/** Campos de `TimerPreset` que representan un contador. */
+export type CountField = "cycles" | "tabatas";
+
+/** Qué está editando la hoja inferior, o `null` si está cerrada. */
+export type EditorTarget =
+  | { kind: "timer"; phase: PhaseField }
+  | { kind: "name" };
