@@ -12,8 +12,7 @@ const secondsFromTimer = (minutes: number, seconds: number) =>
   minutes * 60 + seconds;
 
 export const useTimer = ({ form }: useTimerProps) => {
-  const { finalBeepSound, workSound, restSound, pauseSound, resumeSound } =
-    useSoundContext();
+  const { play } = useSoundContext();
 
   const {
     changeMinutes,
@@ -103,7 +102,7 @@ export const useTimer = ({ form }: useTimerProps) => {
     }
 
     beepedRef.current.add(remainingSeconds);
-    finalBeepSound.play();
+    play("finalBeep");
   };
 
   const finishCurrentTimer = () => {
@@ -111,7 +110,7 @@ export const useTimer = ({ form }: useTimerProps) => {
     completedRef.current = true;
 
     if (state.activeTimer === TimerType.PREPARE) {
-      workSound.play();
+      play("work");
       runTimer({
         timerName: TimerType.WORK,
         minutes: form.workM,
@@ -121,7 +120,7 @@ export const useTimer = ({ form }: useTimerProps) => {
     }
 
     if (state.activeTimer === TimerType.WORK) {
-      restSound.play();
+      play("rest");
       runTimer({
         timerName: TimerType.REST,
         minutes: form.restM,
@@ -138,7 +137,7 @@ export const useTimer = ({ form }: useTimerProps) => {
       return;
     }
 
-    workSound.play();
+    play("work");
     runTimer({
       timerName: TimerType.WORK,
       minutes: form.workM,
@@ -150,9 +149,9 @@ export const useTimer = ({ form }: useTimerProps) => {
 
   const toggleTimerPause = () => {
     if (state.isPaused) {
-      resumeSound.play();
+      play("resume");
     } else {
-      pauseSound.play();
+      play("pause");
     }
     togglePause();
   };

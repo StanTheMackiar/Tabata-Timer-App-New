@@ -1,19 +1,13 @@
-import { Howl } from "howler";
 import { createContext, useContext } from "react";
+import { SoundId } from "../../interfaces/audio/audio-engine.interface";
 
 interface ContextProps {
-  finalBeepSound: Howl;
-  pauseSound: Howl;
-  prepareSound: Howl;
-  resumeSound: Howl;
-  restSound: Howl;
-  stopSound: Howl;
-  workSound: Howl;
-  completeSound: Howl;
-  isReady: boolean;
+  play: (id: SoundId) => void;
+  stopAllSounds: () => void;
+  setVolume: (volume: number) => void;
+  setCoachMuted: (muted: boolean) => void;
   loadSounds: () => Promise<void>;
-  allSounds: Howl[];
-  coachSounds: Howl[];
+  isReady: boolean;
 }
 
 export const SoundContext = createContext({} as ContextProps);
