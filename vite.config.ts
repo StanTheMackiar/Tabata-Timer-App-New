@@ -1,9 +1,17 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { DEV_SERVER_PORT } from "./scripts/dev-server.mjs";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    port: DEV_SERVER_PORT,
+    // Falla en vez de saltar a otro puerto: el reenvío de `adb reverse`
+    // y CAP_SERVER_URL apuntan a este número concreto.
+    strictPort: true,
+  },
+
   plugins: [
     react(),
     VitePWA({

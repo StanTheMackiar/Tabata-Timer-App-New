@@ -1,5 +1,14 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
+// El CLI de Capacitor no lee archivos .env por su cuenta.
+// `process.loadEnvFile` existe desde Node 20.12; el try/catch cubre
+// tanto la ausencia del archivo como versiones anteriores.
+try {
+  process.loadEnvFile?.();
+} catch {
+  // Sin .env: se usan las variables del entorno tal cual.
+}
+
 /**
  * Live reload en dispositivo/emulador.
  *

@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "vite",
     "dev:host": "vite --host",
+    "dev:cap": "node scripts/dev-cap.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src/",
