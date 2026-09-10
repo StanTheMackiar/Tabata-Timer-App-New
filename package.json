@@ -9,12 +9,29 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:host": "vite --host",
+    "dev:cap": "node scripts/dev-cap.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "lint:fix": "eslint src/ --fix",
+    "cap:prebuild": "yarn build",
+    "cap:sync": "yarn cap:prebuild && cap sync",
+    "cap:sync:fast": "cap sync",
+    "cap:copy": "cap copy",
+    "cap:update": "cap update",
+    "cap:doctor": "cap doctor",
+    "android:open": "cap open android",
+    "android:run": "yarn cap:sync && cap run android",
+    "android:dev": "cap run android --livereload --external",
+    "ios:open": "cap open ios",
+    "ios:run": "yarn cap:sync && cap run ios",
+    "ios:dev": "cap run ios --livereload --external"
   },
   "dependencies": {
+    "@capacitor/android": "8.5.1",
+    "@capacitor/core": "8.5.1",
+    "@capacitor/ios": "8.5.1",
     "howler": "^2.2.4",
     "luxon": "^3.7.2",
     "react": "^19.2.6",
@@ -24,6 +41,7 @@
     "styled-components": "^6.4.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.5.1",
     "@types/howler": "^2.2.13",
     "@types/luxon": "^3.7.1",
     "@types/react": "^19.2.15",
