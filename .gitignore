@@ -29,3 +29,8 @@ dist-ssr
 *.sw?
 
 /dev-dist
+
+# Credenciales de firma: nunca al repositorio
+*.jks
+*.keystore
+keystore.properties
