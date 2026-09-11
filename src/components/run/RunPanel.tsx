@@ -13,18 +13,18 @@ export const RunPanel: FC<Props> = ({ onStop, session }) => (
   <Panel>
     <Cards>
       <StatCard>
-        <CardLabel>Cycle</CardLabel>
-        <CardValue>{session.cycleLabel}</CardValue>
+        <StatLabel>Cycle</StatLabel>
+        <StatValue>{session.cycleLabel}</StatValue>
       </StatCard>
       <StatCard>
-        <CardLabel>Tabata</CardLabel>
-        <CardValue>{session.tabataLabel}</CardValue>
+        <StatLabel>Tabata</StatLabel>
+        <StatValue>{session.tabataLabel}</StatValue>
       </StatCard>
     </Cards>
 
     <SessionCard>
       <CardHead>
-        <CardLabel>Session</CardLabel>
+        <SessionLabel>Session</SessionLabel>
         <Remaining>{session.remainingLabel} left</Remaining>
       </CardHead>
       <Track>
@@ -101,22 +101,29 @@ const CardHead = styled.div`
   margin-bottom: 10px;
 `;
 
-const CardLabel = styled.div`
-  margin-bottom: 8px;
+/** Ciclo y tabata: se leen de un vistazo a media sesión. */
+const StatLabel = styled.div`
+  margin-bottom: 10px;
+  font-size: clamp(13px, 1.5vw, 16px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(233, 233, 237, 0.6);
+`;
+
+/** La barra de sesión es información de fondo, y su etiqueta se mantiene discreta. */
+const SessionLabel = styled.div`
   font-size: clamp(9.5px, 1vw, 11px);
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--pf-muted);
-
-  ${CardHead} & {
-    margin-bottom: 0;
-  }
 `;
 
-const CardValue = styled.div`
-  font-size: clamp(28px, 3.4vw, 44px);
+const StatValue = styled.div`
+  font-size: clamp(38px, 4.8vw, 60px);
   font-weight: 500;
   line-height: 0.85;
   letter-spacing: -0.02em;

@@ -87,6 +87,11 @@ const Chip = styled.button<{ $isActive: boolean }>`
   &:hover {
     border-color: var(--pf-accent);
   }
+
+  &:active {
+    border-color: var(--pf-accent);
+    background: rgba(145, 132, 217, 0.14);
+  }
 `;
 
 const Name = styled.span<{ $isActive: boolean }>`
@@ -117,7 +122,8 @@ const RenameButton = styled.button`
   font-weight: 500;
   line-height: 1;
 
-  &:hover {
+  &:hover,
+  &:active {
     color: var(--pf-accent-soft);
   }
 `;

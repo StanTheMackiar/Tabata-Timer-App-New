@@ -32,18 +32,27 @@ export const PrimaryAction = styled.button<{ $large?: boolean }>`
   }
 
   &:active {
+    background: var(--pf-accent-hover);
     transform: translateY(1px);
   }
 `;
 
-/** Acción secundaria: Stop, End session, Done. */
+/**
+ * Acción secundaria.
+ *
+ * Con `$danger` (Stop, End session) va roja de entrada y no sólo al pasar por
+ * encima: en una pantalla táctil no hay hover que descubra el color, y detener
+ * la sesión merece leerse como lo que es.
+ */
 export const GhostAction = styled.button<{ $danger?: boolean }>`
   ${base};
   min-height: clamp(56px, 7vw, 74px);
   gap: 8px;
-  border: 1px solid var(--pf-line);
-  background: transparent;
-  color: rgba(233, 233, 237, 0.75);
+  border: 1px solid
+    ${({ $danger }) => ($danger ? COLORS.rest : "var(--pf-line)")};
+  background: ${({ $danger }) =>
+    $danger ? "rgba(232, 119, 106, 0.1)" : "transparent"};
+  color: ${({ $danger }) => ($danger ? COLORS.rest : "rgba(233, 233, 237, 0.75)")};
   font-size: clamp(14px, 1.7vw, 20px);
   transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
 
@@ -51,6 +60,15 @@ export const GhostAction = styled.button<{ $danger?: boolean }>`
     border-color: ${({ $danger }) =>
       $danger ? COLORS.rest : "var(--pf-accent)"};
     color: ${({ $danger }) => ($danger ? COLORS.rest : "var(--pf-white)")};
-    background: ${({ $danger }) => ($danger ? "rgba(232, 119, 106, 0.08)" : "transparent")};
+    background: ${({ $danger }) =>
+      $danger ? "rgba(232, 119, 106, 0.2)" : "transparent"};
+  }
+
+  &:active {
+    border-color: ${({ $danger }) =>
+      $danger ? COLORS.rest : "var(--pf-accent)"};
+    color: ${({ $danger }) => ($danger ? COLORS.rest : "var(--pf-white)")};
+    background: ${({ $danger }) =>
+      $danger ? "rgba(232, 119, 106, 0.28)" : "transparent"};
   }
 `;

@@ -21,7 +21,7 @@ const PHASE_LABEL: Record<TimerType, string> = {
 
 /** Se muestra bajo el nombre de cada intervalo en la home. */
 const PHASE_HINT: Record<TimerType, string> = {
-  [TimerType.PREPARE]: "Get to your mat",
+  [TimerType.PREPARE]: "Initial count",
   [TimerType.WORK]: "Max effort interval",
   [TimerType.REST]: "Recover between cycles",
 };

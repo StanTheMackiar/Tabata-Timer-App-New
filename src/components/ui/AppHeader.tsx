@@ -51,7 +51,7 @@ export const AppHeader: FC<Props> = ({
             fill="none"
           />
         </BrandMark>
-        <BrandName>Tabata</BrandName>
+        <BrandName>Workbata</BrandName>
       </Brand>
 
       {isRunning && elapsedLabel && (

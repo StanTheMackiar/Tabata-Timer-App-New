@@ -18,4 +18,9 @@ export const IconButton = styled.button<{ $color?: string }>`
     background: rgba(145, 132, 217, 0.12);
     border-color: var(--pf-accent);
   }
+
+  &:active {
+    background: rgba(145, 132, 217, 0.22);
+    border-color: var(--pf-accent);
+  }
 `;

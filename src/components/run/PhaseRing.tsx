@@ -77,7 +77,7 @@ export const PhaseRing: FC<Props> = ({
 
 const Container = styled.div`
   position: relative;
-  width: min(100%, clamp(230px, 42vw, 430px));
+  width: min(100%, clamp(280px, 44vw, 420px));
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -111,7 +111,7 @@ const Center = styled.div`
 `;
 
 const Time = styled.div`
-  font-size: clamp(64px, 15vw, 150px);
+  font-size: clamp(76px, 15vw, 110px);
   font-weight: 500;
   line-height: 0.86;
   letter-spacing: -0.045em;
@@ -119,7 +119,11 @@ const Time = styled.div`
 `;
 
 const Next = styled.div`
-  font-size: clamp(10px, 1.15vw, 13px);
+  /*
+   * Por encima del clamp(10px, 1.15cqi, 13px) del diseño: a 10px, con este
+   * interletrado y sobre el resplandor de la fase, no se leía.
+   */
+  font-size: clamp(12px, 1.5vw, 16px);
   line-height: 1;
   letter-spacing: 0.16em;
   text-transform: uppercase;

@@ -176,7 +176,8 @@ const Chip = styled.button<{ $activeColor?: string }>`
   font-variant-numeric: tabular-nums;
   transition: border-color 0.16s ease;
 
-  &:hover {
+  &:hover,
+  &:active {
     border-color: var(--pf-accent);
   }
 `;

@@ -1,4 +1,3 @@
-export * from "./useInterval";
 export * from "./usePresets";
 export * from "./useSession";
 export * from "./useSessionControls";

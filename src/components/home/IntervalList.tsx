@@ -54,25 +54,26 @@ const Row = styled.button<{ $color: string }>`
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: clamp(12px, 1.6vw, 18px);
+  gap: clamp(14px, 2vw, 22px);
   min-height: 0;
-  padding: clamp(12px, 1.8vw, 20px) clamp(14px, 2vw, 22px);
+  padding: clamp(14px, 2.2vw, 24px) clamp(16px, 2.4vw, 26px);
   border: 1px solid var(--pf-line);
-  border-radius: var(--pf-radius);
+  border-radius: 16px;
   background: var(--pf-panel);
   color: var(--pf-white);
   overflow: hidden;
   text-align: left;
   transition: border-color 0.2s ease, transform 0.2s ease;
 
-  &:hover {
+  &:hover,
+  &:active {
     border-color: ${({ $color }) => $color};
     transform: translateY(-1px);
   }
 `;
 
 const Bar = styled.span<{ $color: string; $glow: string }>`
-  width: clamp(4px, 0.5vw, 5px);
+  width: clamp(5px, 0.6vw, 6px);
   align-self: stretch;
   border-radius: 99px;
   background: ${({ $color }) => $color};
@@ -82,21 +83,21 @@ const Bar = styled.span<{ $color: string; $glow: string }>`
 const Text = styled.span`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   min-width: 0;
 `;
 
 const Label = styled.span<{ $color: string }>`
-  font-size: clamp(14px, 1.7vw, 20px);
+  font-size: clamp(19px, 2.6vw, 32px);
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: ${({ $color }) => $color};
 `;
 
 const Hint = styled.span`
-  font-size: clamp(10px, 1.05vw, 12px);
+  font-size: clamp(11px, 1.15vw, 13px);
   line-height: 1;
   color: rgba(233, 233, 237, 0.5);
 `;
@@ -105,11 +106,11 @@ const ValueGroup = styled.span`
   display: flex;
   align-items: center;
   gap: clamp(8px, 1.2vw, 14px);
-  font-size: clamp(14px, 1.5vw, 18px);
+  font-size: clamp(15px, 1.6vw, 20px);
 `;
 
 const Value = styled.span`
-  font-size: clamp(34px, 5vw, 60px);
+  font-size: clamp(40px, 6.4vw, 76px);
   font-weight: 500;
   line-height: 0.85;
   letter-spacing: -0.03em;
