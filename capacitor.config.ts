@@ -30,7 +30,7 @@ if (liveReloadUrl) {
 }
 
 const config: CapacitorConfig = {
-  appId: "com.stanlycalle.tabatatimer.app",
+  appId: "com.stanlycalle.workbata.app",
   appName: "Workbata",
   webDir: "dist",
 

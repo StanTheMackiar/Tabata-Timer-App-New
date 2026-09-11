@@ -1,5 +1,6 @@
-package com.stanlycalle.tabatatimer.app;
+package com.stanlycalle.workbata.app;
 
 import com.getcapacitor.BridgeActivity;
 
-public class MainActivity extends BridgeActivity {}
+public class MainActivity extends BridgeActivity {
+}

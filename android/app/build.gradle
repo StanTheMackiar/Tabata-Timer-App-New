@@ -25,10 +25,10 @@ android {
         }
     }
 
-    namespace = "com.stanlycalle.tabatatimer.app"
+    namespace = "com.stanlycalle.workbata.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.stanlycalle.tabatatimer.app"
+        applicationId "com.stanlycalle.workbata.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
