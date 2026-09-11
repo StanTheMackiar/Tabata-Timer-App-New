@@ -171,7 +171,9 @@ Router
 endAtRef.current = DateTime.now().plus({ seconds: minutes * 60 + seconds });
 ```
 
-y hace tick cada **250 ms** recalculando el tiempo restante contra el reloj real. Así el cronómetro no deriva aunque el navegador retrase el intervalo (pestaña en segundo plano, dispositivo con carga alta) y la UI reacciona en menos de un segundo al cambio de fase.
+y recalcula el restante contra el reloj real. Así el cronómetro no deriva aunque el navegador retrase un fotograma.
+
+Ese restante se lleva en **dos resoluciones**. La fraccionaria se recalcula en cada fotograma y sólo alimenta lo que se mueve —el anillo del intervalo y la barra de sesión—, para que avancen de forma continua en vez de a saltos de un segundo. La entera llega al reducer únicamente cuando cambia de segundo, que es lo que necesitan la cifra del reloj, los pitidos y el cambio de fase; así el contexto no se actualiza sesenta veces por segundo.
 
 Al pausar se guarda el tiempo restante; al reanudar se reconstruye `endAt` a partir de ese valor, de modo que la pausa nunca pierde ni regala segundos.
 

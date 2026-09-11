@@ -32,7 +32,7 @@ Requiere Node >= 20 y **yarn**. El build de Android necesita **JDK 21**: Gradle 
 | `src/components/home/` | Total, presets, intervalos, contadores |
 | `src/components/run/` | Anillo, pips, panel de sesión, cartel de pausa |
 | `src/components/editor/` | Hoja inferior de edición y selector de tiempo |
-| `src/hooks/` | `usePresets`, `useSession`, `useSessionControls`, `useVolume`, `useInterval` |
+| `src/hooks/` | `usePresets`, `useSession`, `useSessionControls`, `useVolume` |
 | `src/utils/` | `colors`, `presets`, `session`, `time`, `timers`, `local-storage`, `breakpoints` |
 | `scripts/` | Puerto compartido del dev server y arranque con `adb reverse` |
 | `android/`, `ios/` | Proyectos nativos versionados |
@@ -42,7 +42,7 @@ Requiere Node >= 20 y **yarn**. El build de Android necesita **JDK 21**: Gradle 
 1. `App.tsx` anida `SoundProvider > PresetsProvider > TimerProvider` bajo el `Router` e inyecta los tokens `--pf-*` de la paleta Nocturne.
 2. **HomePage** muestra cuatro presets con nombre. Tocar un intervalo abre la hoja inferior; ciclos y tabatas se ajustan con ± sin salir de la pantalla.
 3. Al pulsar Start, `useSessionControls` precarga los sonidos (el gesto es lo que desbloquea el audio en móvil), arranca la sesión en el reducer y navega a `/run`.
-4. `useSession` es el motor: guarda un instante de fin absoluto con Luxon y hace tick cada 250 ms, así que el reloj no deriva. Al llegar a 0, `getNextPhase` decide la siguiente fase contando ciclos y tabatas hacia arriba.
+4. `useSession` es el motor: guarda un instante de fin absoluto, así que el reloj no deriva. Lleva el restante en dos resoluciones — fraccionario por fotograma para el anillo y la barra, entero al reducer sólo al cambiar de segundo para la cifra, los pitidos y el cambio de fase. Al llegar a 0, `getNextPhase` decide la siguiente fase contando ciclos y tabatas hacia arriba.
 5. Agotados los tabatas, el reducer guarda un `summary` y la app navega a `/summary`, que muestra trabajo acumulado, total, ciclos y tabatas.
 
 ## Convenciones
@@ -55,6 +55,8 @@ Requiere Node >= 20 y **yarn**. El build de Android necesita **JDK 21**: Gradle 
 - **localStorage siempre vía** `getLocalStorageItem` / `setLocalStorageItem` con una clave de `LocalStorageKey`.
 - **Navegación vía** `useAppNavigate` + `AppRoute`.
 - **Iconos desde `react-icons/pi`** (Phosphor). Nada de CDNs: no resolverían offline ni dentro del WebView.
+- **Todo lo que se mueve en cada fotograma** se mantiene fuera del contexto: si entrara en el reducer, la app entera se volvería a renderizar sesenta veces por segundo.
+- **Estados `:active` además de `:hover`**: en una pantalla táctil el hover no existe, y sin ellos no hay respuesta visual al pulsar.
 - Barrels (`index.ts`) en cada carpeta de componentes, `hooks/`, `utils/`, `enums/`, `interfaces/`, `pages/`.
 - Commits en Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`).
 

@@ -47,7 +47,7 @@ Mapa `archivo:línea` de cada símbolo del proyecto. Regenerado tras el rediseñ
 | `TimerState` | `src/context/timer/timerReducer.ts:25` | `preset`, `session`, `summary`, `isPaused` |
 | `TimerActionTypes` | `src/context/timer/timerReducer.ts:32` | 7 acciones |
 | `timerReducer` | `src/context/timer/timerReducer.ts:66` | `START_SESSION` en :68, `COMPLETE_SESSION` en :113 |
-| `useTimerReducer` | `src/context/timer/timerReducer.ts:142` | |
+| `useTimerReducer` | `src/context/timer/timerReducer.ts:141` | |
 
 ### Sonido
 
@@ -68,17 +68,18 @@ Mapa `archivo:línea` de cada símbolo del proyecto. Regenerado tras el rediseñ
 
 | Símbolo | Coordenada | Notas |
 | --- | --- | --- |
-| `useSession` | `src/hooks/useSession.ts:29` | **Motor de la sesión** |
-| ↳ refs de control | `src/hooks/useSession.ts:47` | `endAt`, `completed`, `paused`, `pauseRemaining`, `beeped` |
-| ↳ `armPhaseEndTime` | `src/hooks/useSession.ts:55` | Instante de fin absoluto con Luxon |
-| ↳ `syncPauseWithClock` | `src/hooks/useSession.ts:73` | Reconstruye `endAt` al reanudar |
-| ↳ `playCountdown` | `src/hooks/useSession.ts:104` | Pita en 3-2-1-0 si la fase dura ≤ 60s |
-| ↳ `finishPhase` | `src/hooks/useSession.ts:118` | Avanza o completa la sesión |
-| ↳ tick | `src/hooks/useSession.ts:144` | 250 ms mientras corra y no esté pausada |
-| `SessionView` | `src/hooks/useSession.ts:178` | Lo que consume la pantalla de sesión |
-| `useSessionControls` | `src/hooks/useSessionControls.ts:7` | `start`, `stop`, `dismissSummary` |
+| `useSession` | `src/hooks/useSession.ts:36` | **Motor de la sesión** |
+| ↳ refs de control | `src/hooks/useSession.ts:50` | `endAt` (ms), `completed`, `paused`, `pauseRemaining`, `beeped`, `lastWholeSecond` |
+| ↳ `remainingExact` | `src/hooks/useSession.ts:57` | Restante fraccionario; sólo alimenta anillo y barra |
+| ↳ `getRemainingExact` | `src/hooks/useSession.ts:61` | Contra el instante de fin, sin crear un `DateTime` por fotograma |
+| ↳ `armPhaseEndTime` | `src/hooks/useSession.ts:67` | Fija el instante de fin desde el restante, no la duración |
+| ↳ `syncPauseWithClock` | `src/hooks/useSession.ts:90` | Reconstruye el fin al reanudar |
+| ↳ `playCountdown` | `src/hooks/useSession.ts:109` | Pita en 3-2-1-0 si la fase dura ≤ 60s |
+| ↳ `finishPhase` | `src/hooks/useSession.ts:123` | Avanza o completa la sesión |
+| ↳ `runClock` | `src/hooks/useSession.ts:148` | Bucle de `requestAnimationFrame`; despacha al reducer sólo al cambiar de segundo |
+| `SessionView` | `src/hooks/useSession.ts:213` | Lo que consume la pantalla de sesión |
+| `useSessionControls` | `src/hooks/useSessionControls.ts:9` | `start`, `stop`, `dismissSummary` |
 | `useVolume` | `src/hooks/useVolume.ts:6` | Volumen global y mute del coach, persistidos |
-| `useInterval` | `src/hooks/useInterval.ts:3` | |
 
 ## Componentes
 
@@ -92,7 +93,7 @@ Mapa `archivo:línea` de cada símbolo del proyecto. Regenerado tras el rediseñ
 | `VolumePopover` | `src/components/ui/VolumePopover.tsx:14` | Sustituye a la barra fija |
 | `PhaseGlow` | `src/components/ui/PhaseGlow.tsx:12` | Resplandor difuso del fondo |
 | `IconButton` | `src/components/ui/IconButton.tsx:4` | |
-| `PrimaryAction` / `GhostAction` | `src/components/ui/ActionButton.tsx:15` / `:40` | |
+| `PrimaryAction` / `GhostAction` | `src/components/ui/ActionButton.tsx:15` / `:47` | `$danger` pinta Stop y End session de rojo permanente |
 
 ### Home
 
@@ -111,6 +112,7 @@ Mapa `archivo:línea` de cada símbolo del proyecto. Regenerado tras el rediseñ
 | ↳ radios | `src/components/run/PhaseRing.tsx:14` | 92 (fase) y 79 (sesión) sobre un viewBox de 200 |
 | `CyclePips` | `src/components/run/CyclePips.tsx:11` | |
 | `RunPanel` | `src/components/run/RunPanel.tsx:12` | Tarjetas, barra de sesión y controles |
+| ↳ `StatLabel` / `SessionLabel` | `src/components/run/RunPanel.tsx:105` / `:116` | Ciclo y tabata se leen a distancia; la sesión es información de fondo |
 | `PausedOverlay` | `src/components/run/PausedOverlay.tsx:14` | Desenfoque; el reloj queda legible detrás |
 
 ### Editor
@@ -138,13 +140,15 @@ Mapa `archivo:línea` de cada símbolo del proyecto. Regenerado tras el rediseñ
 | `MIN_VALUE` / `MAX_VALUE` | `src/utils/presets.ts:7` / `:15` | Preparación admite 0; el resto, mínimo 1 |
 | `createInitialPresets` | `src/utils/presets.ts:23` | Classic / Thirty / Forty / Fifty |
 | `stepValue` | `src/utils/presets.ts:31` | Circular entre extremos |
-| `getTotalSeconds` | `src/utils/presets.ts:48` | |
-| `LegacyPreset` / `fromLegacy` | `src/utils/presets.ts:55` / `:69` | Migración del formato anterior al rediseño |
-| `parseStoredPresets` | `src/utils/presets.ts:87` | Normaliza lo que haya guardado |
-| `getNextPhase` | `src/utils/session.ts:15` | Máquina de estados de la sesión |
-| `getElapsedSeconds` | `src/utils/session.ts:41` | |
-| `getNextLabel` | `src/utils/session.ts:57` | |
-| `getCyclePips` | `src/utils/session.ts:71` | |
+| `getInitialPhase` | `src/utils/presets.ts:49` | Sin preparación la sesión abre en trabajo; lo comparten reducer y controles |
+| `getTotalSeconds` | `src/utils/presets.ts:52` | |
+| `LegacyPreset` / `fromLegacy` | `src/utils/presets.ts:59` / `:73` | Migración del formato anterior al rediseño |
+| `parseStoredPresets` | `src/utils/presets.ts:91` | Normaliza lo que haya guardado |
+| `getPhaseCue` | `src/utils/session.ts:17` | Aviso de voz de cada fase, en un único sitio |
+| `getNextPhase` | `src/utils/session.ts:25` | Máquina de estados de la sesión |
+| `getElapsedSeconds` | `src/utils/session.ts:51` | |
+| `getNextLabel` | `src/utils/session.ts:67` | |
+| `getCyclePips` | `src/utils/session.ts:81` | |
 | `getPhaseColor` / `getPhaseGlow` | `src/utils/timers.ts:29` / `:32` | |
 | `getPhaseLabel` / `getPhaseHint` | `src/utils/timers.ts:35` / `:37` | |
 | `PHASE_ORDER` | `src/utils/timers.ts:39` | Orden de las filas de la home |
@@ -164,9 +168,9 @@ Mapa `archivo:línea` de cada símbolo del proyecto. Regenerado tras el rediseñ
 
 | Archivo | Uso |
 | --- | --- |
-| `beeps/321beep.mp3` | Cuenta atrás (`useSession.ts:112`) |
-| `beeps/pause.mp3` / `resume.mp3` | Pausa y reanudación (`useSession.ts:152`) |
-| `coach/prepare.mp3` | Al iniciar (`useSessionControls.ts:17`) |
-| `coach/work.mp3` / `rest.mp3` | Cambio de fase (`useSession.ts:137`) |
-| `coach/stop.mp3` | Parada manual (`useSessionControls.ts:24`) |
-| `coach/complete.mp3` | Sesión completada (`useSession.ts:131`) |
+| `beeps/321beep.mp3` | Cuenta atrás (`useSession.ts:120`) |
+| `beeps/pause.mp3` / `resume.mp3` | Pausa y reanudación (`useSession.ts:206`) |
+| `coach/prepare.mp3` | Al iniciar, si hay preparación (`useSessionControls.ts:22`) |
+| `coach/work.mp3` / `rest.mp3` | Cambio de fase (`useSession.ts:140`) |
+| `coach/stop.mp3` | Parada manual (`useSessionControls.ts:29`) |
+| `coach/complete.mp3` | Sesión completada (`useSession.ts:134`) |
