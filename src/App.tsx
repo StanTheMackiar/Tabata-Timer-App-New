@@ -71,6 +71,26 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100dvh;
     -webkit-text-size-adjust: 100%;
   }
+  /*
+   * Dentro del contenedor nativo la app deja de comportarse como un
+   * documento: ni selección de texto, ni menú al mantener pulsado, ni zoom
+   * por doble toque. En navegador no se aplica nada de esto.
+   */
+  html[data-native="true"] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Corta el doble toque para hacer zoom sin afectar al desplazamiento. */
+    touch-action: manipulation;
+  }
+
+  html[data-native="true"] input,
+  html[data-native="true"] textarea {
+    /* Los campos de texto sí deben poder seleccionarse y editarse. */
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
   button,
   input {
     font: inherit;

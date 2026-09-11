@@ -29,6 +29,10 @@ const config: CapacitorConfig = {
   // Debe coincidir con COLORS.bg (src/utils/colors.ts).
   backgroundColor: "#070908",
 
+  // Es el valor por defecto desde Capacitor 6, pero conviene dejarlo escrito:
+  // que no haya zoom es una decisión de la app, no una casualidad del default.
+  zoomEnabled: false,
+
   android: {
     backgroundColor: "#070908",
   },
