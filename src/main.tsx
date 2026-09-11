@@ -1,12 +1,14 @@
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
-import { applyNativeWebViewRules } from './utils/native-webview'
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+import { initEruda } from "./utils/eruda";
+import { applyNativeWebViewRules } from "./utils/native-webview";
 
-applyNativeWebViewRules()
+applyNativeWebViewRules();
+document.addEventListener("DOMContentLoaded", initEruda);
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // <React.StrictMode>
-    <App />
+  <App />,
   // </React.StrictMode>,
-)
+);

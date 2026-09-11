@@ -8,29 +8,17 @@
     />
     <meta name="theme-color" content="#161826" />
     <meta name="MobileOptimized" content="width" />
-    <meta name="description" content="Tabata interval timer for HIIT training" />
+    <meta name="description" content="Timer for yout Tabata trains!" />
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
     <link rel="apple-touch-icon" href="/logo192.png" sizes="180x180" />
-    <link rel="mask-icon" href="/logo512.png" color="#161826" />
+    <link rel="mask-icon" href="/logo512.png" color="#FFFFFF" />
 
-    <title>Workbata</title>
+    <title>Tabata - Timer</title>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
     </style>
 
     <% if (isDevelopment) { %>
-    <script>
-      (function () {
-        var cap = window.Capacitor;
-        var isNative =
-          (cap &&
-            typeof cap.isNativePlatform === "function" &&
-            cap.isNativePlatform()) ||
-          / wv\b/.test(navigator.userAgent || "");
-
-        if (isNative && window.eruda) window.eruda.init();
-      })();
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <% } %>
   </head>
