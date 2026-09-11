@@ -51,6 +51,16 @@ export const createNativeAudioEngine = (): AudioEngine => {
     // esté escuchando el usuario, en vez de robarle el foco de audio.
     await NativeAudio.configure({ focus: false, fade: false });
 
+    // El proceso nativo sobrevive a una recarga del WebView y conserva los
+    // assets del arranque anterior. Sin descargarlos antes, el preload siguiente
+    // se rechaza por duplicado y el motor entero cae al respaldo web, que es
+    // justo lo que pasa con el live reload.
+    await Promise.all(
+      SOUND_IDS.map((id) =>
+        NativeAudio.unload({ assetId: id }).catch(() => undefined),
+      ),
+    );
+
     await Promise.all(
       SOUND_IDS.map((id) =>
         NativeAudio.preload({
