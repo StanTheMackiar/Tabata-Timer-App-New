@@ -1,6 +1,30 @@
 apply plugin: 'com.android.application'
 
+// Credenciales de firma, fuera del control de versiones.
+// Copia keystore.properties.example a android/keystore.properties y rellénalo.
+// Sin ese archivo el build de release sale sin firmar, que es lo que necesitan
+// CI y cualquier máquina que no publique.
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+def hasSigningCredentials = keystorePropertiesFile.exists()
+
+if (hasSigningCredentials) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
 android {
+    if (hasSigningCredentials) {
+        signingConfigs {
+            release {
+                // Ruta relativa al módulo app, para que no dependa de la máquina.
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
+
     namespace = "com.stanlycalle.tabatatimer.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -18,6 +42,9 @@ android {
     }
     buildTypes {
         release {
+            if (hasSigningCredentials) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
