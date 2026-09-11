@@ -33,11 +33,11 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
       manifest: {
-        name: "Tabata Timer",
-        short_name: "Tabata",
-        description: "Timer for your Tabata trains!",
-        background_color: "#2B2B2B",
-        theme_color: "#169F9F",
+        name: "Workbata",
+        short_name: "Workbata",
+        description: "Tabata interval timer for HIIT training",
+        background_color: "#161826",
+        theme_color: "#161826",
         orientation: "portrait",
         display_override: ["fullscreen", "minimal-ui"],
         display: "standalone",
@@ -47,7 +47,7 @@ export default defineConfig({
         icons: [
           {
             src: "/favicon.png",
-            sizes: "64x64 32x32 24x24 16x16",
+            sizes: "64x64",
             type: "image/png",
           },
           {
@@ -59,6 +59,14 @@ export default defineConfig({
             src: "/logo512.png",
             type: "image/png",
             sizes: "512x512",
+          },
+          {
+            // Variante recortable: la obra vive en el 80% central, así que
+            // sobrevive a la máscara que aplique cada lanzador.
+            src: "/logo512-maskable.png",
+            type: "image/png",
+            sizes: "512x512",
+            purpose: "maskable",
           },
         ],
       },
