@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { createHtmlPlugin } from "vite-plugin-html";
 import { VitePWA } from "vite-plugin-pwa";
 import { DEV_SERVER_PORT } from "./scripts/dev-server.mjs";
 
@@ -13,6 +14,14 @@ export default defineConfig({
   },
 
   plugins: [
+    createHtmlPlugin({
+      inject: {
+        data: {
+          isDevelopment: process.env.NODE_ENV !== "production",
+          isProduction: process.env.NODE_ENV === "production",
+        },
+      },
+    }),
     react(),
     VitePWA({
       injectRegister: "auto",
