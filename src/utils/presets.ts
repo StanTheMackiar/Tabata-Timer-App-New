@@ -45,6 +45,10 @@ export const stepValue = (
 export const clampValue = (value: number, field: PhaseField | CountField) =>
   Math.min(MAX_VALUE[field], Math.max(MIN_VALUE[field], Math.round(value)));
 
+/** Un preset sin preparación arranca directamente en trabajo. */
+export const getInitialPhase = (preset: TimerPreset) =>
+  preset.prepare > 0 ? TimerType.PREPARE : TimerType.WORK;
+
 export const getTotalSeconds = (preset: TimerPreset) =>
   preset.prepare + (preset.work + preset.rest) * preset.cycles * preset.tabatas;
 

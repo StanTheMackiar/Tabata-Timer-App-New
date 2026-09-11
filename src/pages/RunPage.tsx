@@ -1,10 +1,10 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
+import { Navigate } from "react-router-dom";
 import styled from "styled-components";
 import { CyclePips, PausedOverlay, PhaseRing, RunPanel } from "../components";
 import { Layout } from "../components/layouts/Layout";
 import { useTimerContext } from "../context/timer/useTimerContext";
 import { useSession, useSessionControls } from "../hooks";
-import { useAppNavigate } from "../routes/navigation.helper";
 import { AppRoute } from "../routes/routes.enum";
 import { BREAKPOINTS } from "../utils/breakpoints";
 
@@ -13,17 +13,20 @@ export const RunPage: FC = () => {
   const { state } = useTimerContext();
   const { stop } = useSessionControls();
 
-  const navigate = useAppNavigate();
-
-  useEffect(
-    function leaveWhenThereIsNothingRunning() {
-      // Entrar por URL sin sesión activa, o volver atrás tras terminarla.
-      if (!state.session && !state.summary) navigate(AppRoute.HOME);
-    },
-    [state.session, state.summary],
-  );
-
-  if (!session) return null;
+  /*
+   * Sin sesión en marcha no hay nada que enseñar aquí: se entró por URL, o se
+   * volvió atrás desde el resumen. En el segundo caso el destino es el
+   * resumen, no el inicio. La sustitución evita que atrás y adelante reboten
+   * entre las dos pantallas.
+   */
+  if (!session) {
+    return (
+      <Navigate
+        to={state.summary ? AppRoute.SUMMARY : AppRoute.HOME}
+        replace
+      />
+    );
+  }
 
   return (
     <Layout

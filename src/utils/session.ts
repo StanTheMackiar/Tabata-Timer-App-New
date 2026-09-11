@@ -1,10 +1,20 @@
 import { TimerType } from "../enums";
+import { SoundId } from "../interfaces/audio/audio-engine.interface";
 import { TimerPreset } from "../interfaces";
 import { TimerSession } from "../context/timer/timerReducer";
 import { toShortTime } from "./time";
 
 export const getPhaseSeconds = (preset: TimerPreset, phase: TimerType) =>
   preset[phase];
+
+const PHASE_CUE: Record<TimerType, SoundId> = {
+  [TimerType.PREPARE]: "prepare",
+  [TimerType.WORK]: "work",
+  [TimerType.REST]: "rest",
+};
+
+/** Aviso de voz que anuncia la entrada en cada fase. */
+export const getPhaseCue = (phase: TimerType): SoundId => PHASE_CUE[phase];
 
 /**
  * Siguiente fase de la sesión, o `null` si ya no queda ninguna.

@@ -1,11 +1,11 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { PiArrowCounterClockwise, PiCheckCircleFill } from "react-icons/pi";
+import { Navigate } from "react-router-dom";
 import styled from "styled-components";
 import { GhostAction, PrimaryAction } from "../components";
 import { usePresetsContext } from "../context/presets/usePresetsContext";
 import { useTimerContext } from "../context/timer/useTimerContext";
 import { useSessionControls } from "../hooks";
-import { useAppNavigate } from "../routes/navigation.helper";
 import { AppRoute } from "../routes/routes.enum";
 import { COLORS } from "../utils/colors";
 import { toShortTime } from "../utils/time";
@@ -19,17 +19,17 @@ export const SummaryPage: FC = () => {
   const { preset } = usePresetsContext();
   const { dismissSummary, start } = useSessionControls();
 
-  const navigate = useAppNavigate();
   const { summary } = state;
 
-  useEffect(
-    function leaveWhenThereIsNoSummary() {
-      if (!summary) navigate(AppRoute.HOME);
-    },
-    [summary],
-  );
-
-  if (!summary) return null;
+  // Se llegó por URL sin haber terminado ninguna sesión.
+  if (!summary) {
+    return (
+      <Navigate
+        to={AppRoute.HOME}
+        replace
+      />
+    );
+  }
 
   const stats = [
     { label: "Work time", value: toShortTime(summary.workDone), color: COLORS.work },

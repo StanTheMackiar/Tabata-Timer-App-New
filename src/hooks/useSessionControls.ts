@@ -1,6 +1,8 @@
 import { useSoundContext } from "../context/sound/useSoundContext";
 import { useTimerContext } from "../context/timer/useTimerContext";
 import { TimerPreset } from "../interfaces";
+import { getInitialPhase } from "../utils/presets";
+import { getPhaseCue } from "../utils/session";
 import { useAppNavigate } from "../routes/navigation.helper";
 import { AppRoute } from "../routes/routes.enum";
 
@@ -14,7 +16,9 @@ export const useSessionControls = () => {
     // La carga debe colgar de este gesto: sin él los navegadores móviles
     // bloquean la reproducción durante el resto de la sesión.
     await loadSounds();
-    play("prepare");
+    // Con la preparación a 0 la sesión abre en trabajo, y el aviso debe
+    // corresponder con la fase que realmente empieza.
+    play(getPhaseCue(getInitialPhase(preset)));
 
     startSession(preset);
     navigate(AppRoute.RUN);

@@ -11,6 +11,7 @@ import {
   getElapsedSeconds,
   getNextLabel,
   getNextPhase,
+  getPhaseCue,
   getPhaseSeconds,
 } from "../utils/session";
 import { getTotalSeconds } from "../utils/presets";
@@ -54,7 +55,10 @@ export const useSession = () => {
         return;
       }
 
-      endAtRef.current = DateTime.now().plus({ seconds: session.duration });
+      // Desde el restante y no desde la duración: si se vuelve a /run con una
+      // sesión ya en marcha, la fase debe seguir donde estaba en vez de
+      // empezar otra vez. En una fase recién iniciada ambos coinciden.
+      endAtRef.current = DateTime.now().plus({ seconds: session.remaining });
       completedRef.current = false;
       pausedRef.current = false;
       beepedRef.current = new Set();
@@ -121,7 +125,7 @@ export const useSession = () => {
       return;
     }
 
-    play(next.phase === TimerType.WORK ? "work" : "rest");
+    play(getPhaseCue(next.phase));
     enterPhase({
       ...next,
       duration: getPhaseSeconds(preset, next.phase),

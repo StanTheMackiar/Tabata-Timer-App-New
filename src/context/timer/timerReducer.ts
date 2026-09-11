@@ -1,7 +1,7 @@
 import { useReducer } from "react";
 import { TimerType } from "../../enums";
 import { TimerPreset } from "../../interfaces";
-import { getTotalSeconds } from "../../utils/presets";
+import { getInitialPhase, getTotalSeconds } from "../../utils/presets";
 
 export interface TimerSession {
   phase: TimerType;
@@ -70,9 +70,8 @@ export const timerReducer = (
   switch (action.type) {
     case TimerActionTypes.START_SESSION: {
       const preset = action.payload;
-      // Un preset sin preparación arranca directamente en trabajo.
-      const phase = preset.prepare > 0 ? TimerType.PREPARE : TimerType.WORK;
-      const duration = preset.prepare > 0 ? preset.prepare : preset.work;
+      const phase = getInitialPhase(preset);
+      const duration = preset[phase];
 
       return {
         preset,
