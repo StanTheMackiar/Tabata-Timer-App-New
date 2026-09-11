@@ -20,9 +20,18 @@ try {
  */
 const liveReloadUrl = process.env.CAP_SERVER_URL;
 
+if (liveReloadUrl) {
+  // Sin este aviso es fácil sincronizar con la variable puesta y acabar con un
+  // build que apunta al dev server: la app se instala y no carga nada.
+  console.warn(
+    `\n⚠️  CAP_SERVER_URL activo: el contenedor nativo cargará ${liveReloadUrl}` +
+      `\n   en vez del bundle local. Quítala antes de generar una build real.\n`,
+  );
+}
+
 const config: CapacitorConfig = {
   appId: "com.stanlycalle.tabatatimer.app",
-  appName: "Tabata Timer",
+  appName: "Workbata",
   webDir: "dist",
 
   // Evita el flash blanco del WebView antes de que pinte la app.
