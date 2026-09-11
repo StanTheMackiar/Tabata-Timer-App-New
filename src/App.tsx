@@ -1,7 +1,7 @@
 import { BrowserRouter as Router } from "react-router-dom";
-
 import { createGlobalStyle } from "styled-components";
-import { FormProvider } from "./context/form/FormProvider";
+
+import { PresetsProvider } from "./context/presets/PresetsProvider";
 import { SoundProvider } from "./context/sound/SoundProvider";
 import { TimerProvider } from "./context/timer/TimerProvider";
 import { Navigation } from "./routes/Navigation";
@@ -11,12 +11,12 @@ const App = () => {
   return (
     <Router>
       <SoundProvider>
-        <FormProvider>
+        <PresetsProvider>
           <TimerProvider>
             <GlobalStyle />
             <Navigation />
           </TimerProvider>
-        </FormProvider>
+        </PresetsProvider>
       </SoundProvider>
     </Router>
   );
@@ -28,19 +28,28 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+
   :root {
     --pf-bg: ${COLORS.bg};
     --pf-panel: ${COLORS.panel};
-    --pf-panel-alt: ${COLORS.panelAlt};
     --pf-line: ${COLORS.line};
+    --pf-faint: ${COLORS.faint};
     --pf-white: ${COLORS.white};
     --pf-muted: ${COLORS.muted};
+    --pf-outline: ${COLORS.outline};
+
     --pf-accent: ${COLORS.accent};
-    --pf-dark-text: ${COLORS.textDark};
+    --pf-accent-text: ${COLORS.accentText};
+    --pf-accent-soft: ${COLORS.accentSoft};
+    --pf-accent-hover: ${COLORS.accentHover};
+    --pf-accent-surface: ${COLORS.accentSurface};
+
     --pf-prepare: ${COLORS.prepare};
     --pf-work: ${COLORS.work};
     --pf-rest: ${COLORS.rest};
-    --pf-font: Inter, Arial, Helvetica, sans-serif;
+
+    --pf-font: Inter, system-ui, -apple-system, sans-serif;
+    --pf-radius: 14px;
 
     /*
      * Área segura del dispositivo: notch, isla dinámica, barra de gestos.
@@ -55,6 +64,7 @@ const GlobalStyle = createGlobalStyle`
     --pf-safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
     --pf-safe-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
   }
+
   html,
   body,
   #root {
@@ -63,12 +73,14 @@ const GlobalStyle = createGlobalStyle`
     min-width: 320px;
     overflow: hidden;
   }
+
   body {
-    margin: 0;
     background-color: var(--pf-bg);
     color: var(--pf-white);
     font-family: var(--pf-font);
+    font-size: 15px;
     min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
     -webkit-text-size-adjust: 100%;
   }
   /*
@@ -95,15 +107,52 @@ const GlobalStyle = createGlobalStyle`
   input {
     font: inherit;
   }
+
   button {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
   }
-  p {
-    color: var(--pf-muted);
-    font-size: 1rem;
-    text-align: center;
+
+  :focus-visible {
+    outline: 2px solid var(--pf-accent);
+    outline-offset: 2px;
+  }
+
+  /* Cada animación marca un cambio de estado; ninguna es decorativa. */
+  @keyframes pf-breathe {
+    0%, 100% { opacity: 0.34; }
+    50% { opacity: 0.62; }
+  }
+
+  @keyframes pf-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes pf-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes pf-pop {
+    from { opacity: 0; transform: scale(0.965); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes pf-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 `;
 

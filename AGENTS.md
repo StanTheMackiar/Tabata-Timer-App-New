@@ -1,62 +1,70 @@
 # AGENTS.md — Índice del proyecto
 
-Tabata Timer: PWA de temporizador por intervalos (preparación / trabajo / descanso) construida con React 19 + TypeScript + Vite, styled-components y Howler.
+Tabata Timer: PWA de temporizador por intervalos (preparación / trabajo / descanso) construida con React 19 + TypeScript + Vite, styled-components y Howler, empaquetada además como app nativa Android e iOS con Capacitor.
 
 **Mapa completo de símbolos con coordenadas `archivo:línea`: [COORDINATES.md](COORDINATES.md).** Consúltalo antes de buscar a ciegas.
-Para la visión funcional y técnica en prosa (método Tabata, stack, PWA, decisiones de diseño): [README.md](README.md).
+Para la visión funcional y técnica en prosa: [README.md](README.md).
 
 ## Comandos
 
 | Comando | Qué hace |
 | --- | --- |
-| `yarn dev` | Servidor de desarrollo Vite (PWA activa en dev) |
+| `yarn dev` | Vite en el puerto fijo 5173 |
+| `yarn dev:cap` | `adb reverse` + Vite en `0.0.0.0`, para el emulador Android |
 | `yarn build` | `tsc` (typecheck) + `vite build` |
-| `yarn preview` | Sirve el build de producción |
 | `yarn lint` / `yarn lint:fix` | ESLint sobre `src/` |
+| `yarn cap:sync` | Build web + `cap sync` |
+| `yarn android:dev` / `yarn ios:dev` | Ejecuta con live reload |
+| `yarn android:open` / `yarn ios:open` | Abre Android Studio / Xcode |
 
-Requiere Node >= 20. El gestor de paquetes es **yarn** (`yarn.lock`). No hay tests configurados: verifica con `yarn build` y `yarn lint`.
+Requiere Node >= 20 y **yarn**. El build de Android necesita **JDK 21**: Gradle 8.14 no arranca sobre Java 25 (`export JAVA_HOME=$(/usr/libexec/java_home -v 21)`). No hay tests: verifica con `yarn build` y `yarn lint`.
 
 ## Mapa de directorios
 
 | Ruta | Contenido |
 | --- | --- |
-| `src/pages/` | `HomePage` (configuración) y `StartPage` (ejecución) |
+| `src/pages/` | `HomePage` (configurar), `RunPage` (sesión), `SummaryPage` (resumen final) |
 | `src/routes/` | Enum de rutas, `Navigation`, helper `useAppNavigate` |
-| `src/context/` | Tres providers: `sound/`, `form/`, `timer/` (este último con reducer) |
-| `src/hooks/` | Lógica de negocio: `useForm`, `useTimer`, `useVolume`, `useTotalTime`, `useInterval`, `useInitialValues`, `useStopButton` |
-| `src/components/form/` | Formulario, diálogo de edición, botón start/stop y `styles/FormStyles.ts` |
-| `src/components/ui/` | `Timer`, `PauseTimer`, `TotalTime`, `VolumeControl`, `Header` |
-| `src/components/layouts/` | `Layout` (contenedor de página) |
-| `src/interfaces/`, `src/enums/` | Tipos compartidos y enums (`TimerType`, `LocalStorageKey`, `AppRoute`) |
-| `src/utils/` | `colors`, `breakpoints`, `local-storage`, `timers`, `validation`, `input` |
-| `src/assets/sounds/` | `beeps/` (pitidos) y `coach/` (voz, silenciable aparte) |
-| `types/asset.d.ts` | Declaración de módulo para `*.mp3` |
-| `dist/`, `dev-dist/` | Salidas de build y del service worker; no editar |
+| `src/context/presets/` | Presets con nombre, persistencia y migración |
+| `src/context/timer/` | Reducer y acciones de la sesión |
+| `src/context/sound/` | Motor de audio; `engines/` contiene el web y el nativo |
+| `src/components/ui/` | Armazón: cabecera, popover de volumen, resplandor, botones |
+| `src/components/home/` | Total, presets, intervalos, contadores |
+| `src/components/run/` | Anillo, pips, panel de sesión, cartel de pausa |
+| `src/components/editor/` | Hoja inferior de edición y selector de tiempo |
+| `src/hooks/` | `usePresets`, `useSession`, `useSessionControls`, `useVolume` |
+| `src/utils/` | `colors`, `presets`, `session`, `time`, `timers`, `local-storage`, `breakpoints` |
+| `scripts/` | Puerto compartido del dev server y arranque con `adb reverse` |
+| `android/`, `ios/` | Proyectos nativos versionados |
 
 ## Arquitectura en 60 segundos
 
-1. `App.tsx` anida `SoundProvider > FormProvider > TimerProvider` bajo el `Router` e inyecta las variables CSS `--pf-*` desde `utils/colors.ts`.
-2. **HomePage** muestra 4 presets (T1–T4) persistidos en localStorage. Toda la lógica vive en `useForm`; los componentes sólo dibujan.
-3. Al enviar, `useForm.onSubmit` precarga los sonidos (gesto de usuario necesario para el audio), reproduce el aviso y navega a `/start?preset=N`.
-4. **StartPage** hidrata los valores con `useInitialValues` (query param → localStorage → `initialForm`) y monta `Timer`.
-5. `useTimer` es el motor: guarda un instante de fin absoluto con Luxon (`endAtRef`) y hace tick cada 250 ms, en vez de restar segundos acumulativamente. Al llegar a 0, `finishCurrentTimer` avanza la máquina de estados PREPARE → WORK → REST → WORK … decrementando ciclos y tabatas; cuando se agotan, `useStopButton` reproduce el sonido de finalización y vuelve a `/`.
+1. `App.tsx` anida `SoundProvider > PresetsProvider > TimerProvider` bajo el `Router` e inyecta los tokens `--pf-*` de la paleta Nocturne.
+2. **HomePage** muestra cuatro presets con nombre. Tocar un intervalo abre la hoja inferior; ciclos y tabatas se ajustan con ± sin salir de la pantalla.
+3. Al pulsar Start, `useSessionControls` precarga los sonidos (el gesto es lo que desbloquea el audio en móvil), arranca la sesión en el reducer y navega a `/run`.
+4. `useSession` es el motor: guarda un instante de fin absoluto, así que el reloj no deriva. Lleva el restante en dos resoluciones — fraccionario por fotograma para el anillo y la barra, entero al reducer sólo al cambiar de segundo para la cifra, los pitidos y el cambio de fase. Al llegar a 0, `getNextPhase` decide la siguiente fase contando ciclos y tabatas hacia arriba.
+5. Agotados los tabatas, el reducer guarda un `summary` y la app navega a `/summary`, que muestra trabajo acumulado, total, ciclos y tabatas.
 
 ## Convenciones
 
-- **Estado en hooks, no en componentes.** Un provider fino (`FormProvider`) delega en su hook (`useForm`). Los componentes consumen el contexto y renderizan.
-- **`useEffect` con función nombrada** para documentar la intención: `useEffect(function hydratePresetsFromLocalStorage() {...}, [])`. Mantén el patrón.
-- **Dos formas del formulario**: `TimerFormString` (edición, valores con padding `"05"`) y `TimerFormNumber` (ejecución, con `initialCycles`/`initialTabatas`). No las mezcles.
-- **Colores sólo desde `utils/colors.ts`**; en CSS usa las variables `--pf-*`. Los breakpoints salen de `utils/breakpoints.ts` (`desktop: 950`).
+- **Estado en hooks, no en componentes.** Un provider fino (`PresetsProvider`) delega en su hook (`usePresets`).
+- **`useEffect` con función nombrada** para documentar la intención: `useEffect(function hydratePresetsFromLocalStorage() {...}, [])`.
+- **Los intervalos se guardan en segundos totales**, no en minutos + segundos. El editor deriva ambos campos al vuelo; es lo que permite `01:00` sin casos especiales.
+- **Props de styled-components con prefijo `$`** (`$color`, `$isActive`) para que no lleguen al DOM.
+- **Colores sólo desde `utils/colors.ts`**; en CSS usa las variables `--pf-*`. Un único breakpoint: `BREAKPOINTS.desktop` (950).
 - **localStorage siempre vía** `getLocalStorageItem` / `setLocalStorageItem` con una clave de `LocalStorageKey`.
-- **Navegación vía** `useAppNavigate` + `AppRoute`; nada de strings de ruta sueltos.
-- **styled-components** al final del archivo del componente, salvo el formulario, que centraliza los suyos en `FormStyles.ts`.
-- Barrels (`index.ts`) en `components/`, `hooks/`, `utils/`, `enums/`, `interfaces/`, `pages/`: al añadir un archivo, expórtalo allí.
-- Los mensajes de commit siguen Conventional Commits (`refactor:`, `feat:`, `fix:`).
+- **Navegación vía** `useAppNavigate` + `AppRoute`.
+- **Iconos desde `react-icons/pi`** (Phosphor). Nada de CDNs: no resolverían offline ni dentro del WebView.
+- **Todo lo que se mueve en cada fotograma** se mantiene fuera del contexto: si entrara en el reducer, la app entera se volvería a renderizar sesenta veces por segundo.
+- **Estados `:active` además de `:hover`**: en una pantalla táctil el hover no existe, y sin ellos no hay respuesta visual al pulsar.
+- Barrels (`index.ts`) en cada carpeta de componentes, `hooks/`, `utils/`, `enums/`, `interfaces/`, `pages/`.
+- Commits en Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`).
 
 ## Puntos delicados
 
-- **Audio**: los `Howl` se crean una vez en `SoundProvider`; `loadSounds()` debe invocarse tras una interacción del usuario o los navegadores móviles bloquean la reproducción. Los `coachSounds` se silencian por separado del volumen global.
-- **El archivo del contexto de timer se llama `useTimerContex.ts`** (falta la `t`). Está así en todos los imports; no lo renombres sin actualizarlos.
-- `StrictMode` está deshabilitado en `src/main.tsx:5` — el doble montaje rompería los efectos del cronómetro.
-- `src/utils/input.ts` (`getInputValue`) y `ITimers` no tienen usos actuales.
-- La PWA usa `registerType: "autoUpdate"` con devOptions activadas: en desarrollo puede servirse contenido cacheado por el service worker.
+- **Audio**: el motor se elige en `createAudioEngine` según la plataforma. `loadSounds()` debe colgar de una interacción del usuario. En nativo, los cambios de volumen antes de terminar la precarga se ignoran y se reaplican al final.
+- **El service worker cachea el bundle dentro del WebView**: tras un `cap copy` la app nativa puede seguir mostrando la versión anterior hasta un `adb shell pm clear`.
+- **Las capas superpuestas** (hoja del editor, cartel de pausa) se pasan como prop `overlay` al `Layout`, no como hijos: si van dentro del contenido quedan recortadas y no cubren la cabecera.
+- `StrictMode` está deshabilitado en `src/main.tsx`: el doble montaje duplicaría los efectos que arman el reloj.
+- **Presets guardados antes del rediseño** se migran al leerlos (`parseStoredPresets`); no cambies su forma sin actualizar esa función.
+- La PWA usa `registerType: "autoUpdate"` con devOptions activadas.

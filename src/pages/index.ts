@@ -1,6 +1,3 @@
-
-
-
 export * from "./HomePage";
-export * from "./StartPage";
-
+export * from "./RunPage";
+export * from "./SummaryPage";

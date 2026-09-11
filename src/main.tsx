@@ -1,12 +1,11 @@
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
-import { applyNativeWebViewRules } from './utils/native-webview'
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { applyNativeWebViewRules } from "./utils/native-webview";
 
-applyNativeWebViewRules()
+applyNativeWebViewRules();
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>,
-)
+// Sin StrictMode a propósito: el doble montaje duplicaría los efectos que
+// arman el reloj de la sesión.
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <App />,
+);
